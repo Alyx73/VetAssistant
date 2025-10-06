@@ -2,10 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.apr.vetServer.controlador;
+package com.apr.vetserver.controlador;
 
-import com.apr.vetServer.modelo.dao.MascotaDAO;
-import com.apr.vetServer.modelo.vo.Mascota;
+import com.apr.vetserver.modelo.dao.MascotaDAO;
+import com.apr.vetserver.modelo.vo.Mascota;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -45,6 +45,21 @@ public class controladorMascota {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
             return ResponseEntity.ok(mascota);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+    
+    //GET mascota por dueño
+    //Devuelve la mascota o null si no la encuentra
+    @GetMapping("/dueno/{id}")
+    public ResponseEntity<List<Mascota>> getPorIdDueno(@PathVariable int id) {  
+        try {
+            List<Mascota> mascotas = mascotaDAO.getMascotasPorDueno(id);
+            if (mascotas == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+            return ResponseEntity.ok(mascotas);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }

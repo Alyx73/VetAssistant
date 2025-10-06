@@ -2,9 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.apr.vetServer.modelo.dao;
+package com.apr.vetserver.modelo.dao;
 
-import com.apr.vetServer.modelo.vo.Mascota;
+import com.apr.vetserver.modelo.vo.Mascota;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,7 +21,7 @@ public class MascotaDAO {
     private JdbcTemplate jdbc;
     
     // Métodos CRUD
-    // Método para listar todos los clientes
+    // Método para listar todas las mascotas
     public List<Mascota> getMascotas() {
         String sql = "SELECT * FROM mascota";
         return jdbc.query(sql, (rs, rowNum)
@@ -85,6 +85,23 @@ public class MascotaDAO {
     public int deleteMascota(int id) {
         String sql = "DELETE FROM mascota WHERE idMascota=?";
         return jdbc.update(sql, id);
+    }
+    
+    // Método para buscaar todas las mascotas de un dueño
+    public List<Mascota> getMascotasPorDueno(int idDueno) {
+        String sql = "SELECT * FROM mascota WHERE idCliente = ?";
+        return jdbc.query(sql, (rs, rowNum)
+                -> new Mascota(
+                        rs.getInt(1),
+                        rs.getString("nombre"),
+                        rs.getString("especie"),
+                        rs.getString("raza"),
+                        rs.getDate("fechaNacimiento").toLocalDate(),
+                        rs.getInt("idCliente"),
+                        rs.getString("foto")
+                ),
+            idDueno // Paso como argumento el id de la mascota
+        );
     }
 }
 

@@ -2,10 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.apr.vetServer.controlador;
+package com.apr.vetserver.controlador;
 
-import com.apr.vetServer.modelo.dao.ClienteDAO;
-import com.apr.vetServer.modelo.vo.Cliente;
+import com.apr.vetserver.modelo.dao.ClienteDAO;
+import com.apr.vetserver.modelo.vo.Cliente;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
