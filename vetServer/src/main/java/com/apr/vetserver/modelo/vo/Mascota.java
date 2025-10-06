@@ -4,7 +4,6 @@
  */
 package com.apr.vetserver.modelo.vo;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 
