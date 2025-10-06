@@ -15,18 +15,19 @@ import java.time.LocalDate;
 public class Mascota {
     
     private int idMascota;
-    private String nombreString;
-    private String especieString;
-    private String razaString;
-    private LocalDate fechaNacimiento;
+    private String nombre;
+    private String especie;
+    private String raza;
+    //private LocalDate fechaNacimiento;
+    private String fechaNacimiento;
     private int idCliente;
     private String foto;
 
-    public Mascota(int idMascota, String nombre, String especie, String raza, LocalDate fechaNacimiento, int idCliente, String foto) {
+    public Mascota(int idMascota, String nombre, String especie, String raza, String fechaNacimiento, int idCliente, String foto) {
         this.idMascota = idMascota;
-        this.nombreString = nombre;
-        this.especieString = especie;
-        this.razaString = raza;
+        this.nombre = nombre;
+        this.especie = especie;
+        this.raza = raza;
         this.fechaNacimiento = fechaNacimiento;
         this.idCliente = idCliente;
         this.foto = foto;
@@ -42,34 +43,34 @@ public class Mascota {
     }
 
     public String getNombre() {
-        return nombreString;
+        return nombre;
     }
 
     public void setNombre(String nombre) {
-        this.nombreString = nombre;
+        this.nombre = nombre;
     }
 
     public String getEspecie() {
-        return especieString;
+        return especie;
     }
 
     public void setEspecie(String especie) {
-        this.especieString = especie;
+        this.especie = especie;
     }
 
     public String getRaza() {
-        return razaString;
+        return raza;
     }
 
     public void setRaza(String raza) {
-        this.razaString = raza;
+        this.raza = raza;
     }
 
-    public LocalDate getFechaNacimiento() {
+    public String getFechaNacimiento() {
         return fechaNacimiento;
     }
 
-    public void setFechaNacimiento(LocalDate fechaNacimiento) {
+    public void setFechaNacimiento(String fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
     }
 

@@ -389,7 +389,7 @@ public class ClienteMascota extends JFrame {
         modeloTabla.setRowCount(0);
         try {
             List<Mascota> mascotas = new REST("http://localhost:8080/mascotas", Mascota.class).getPorParametro("/dueno/" + txtIdCliente.getText());
-            if (mascotas == null) {
+            if (mascotas.isEmpty()) {
                 modeloTabla.setRowCount(1);
                 modeloTabla.setValueAt("Sin mascotas", 0, 1);
             }

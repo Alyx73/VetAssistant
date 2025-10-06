@@ -30,7 +30,8 @@ public class MascotaDAO {
                         rs.getString("nombre"),
                         rs.getString("especie"),
                         rs.getString("raza"),
-                        rs.getDate("fechaNacimiento").toLocalDate(),
+                        //rs.getDate("fechaNacimiento").toLocalDate(),
+                        rs.getString("fechaNacimiento"),
                         rs.getInt("idCliente"),
                         rs.getString("foto")
                 )
@@ -46,7 +47,8 @@ public class MascotaDAO {
                         rs.getString("nombre"),
                         rs.getString("especie"),
                         rs.getString("raza"),
-                        rs.getDate("fechaNacimiento").toLocalDate(),
+                        //rs.getDate("fechaNacimiento").toLocalDate(),
+                        rs.getString("fechaNacimiento"),
                         rs.getInt("idCliente"),
                         rs.getString("foto")
                 ),
@@ -61,7 +63,8 @@ public class MascotaDAO {
                 mascota.getNombre(),
                 mascota.getEspecie(),
                 mascota.getRaza(),
-                java.sql.Date.valueOf(mascota.getFechaNacimiento()),
+                //java.sql.Date.valueOf(mascota.getFechaNacimiento()),
+                mascota.getFechaNacimiento(),
                 mascota.getIdCliente(),
                 mascota.getFoto()
         );
@@ -74,7 +77,8 @@ public class MascotaDAO {
                 mascota.getNombre(),
                 mascota.getEspecie(),
                 mascota.getRaza(),
-                java.sql.Date.valueOf(mascota.getFechaNacimiento()),
+                //java.sql.Date.valueOf(mascota.getFechaNacimiento()),
+                mascota.getFechaNacimiento(),
                 mascota.getIdCliente(),
                 mascota.getFoto(),
                 mascota.getIdMascota()
@@ -87,7 +91,7 @@ public class MascotaDAO {
         return jdbc.update(sql, id);
     }
     
-    // Método para buscaar todas las mascotas de un dueño
+    // Método para buscar todas las mascotas de un dueño
     public List<Mascota> getMascotasPorDueno(int idDueno) {
         String sql = "SELECT * FROM mascota WHERE idCliente = ?";
         return jdbc.query(sql, (rs, rowNum)
@@ -96,7 +100,8 @@ public class MascotaDAO {
                         rs.getString("nombre"),
                         rs.getString("especie"),
                         rs.getString("raza"),
-                        rs.getDate("fechaNacimiento").toLocalDate(),
+                        //rs.getDate("fechaNacimiento").toLocalDate(),
+                        rs.getString("fechaNacimiento"),
                         rs.getInt("idCliente"),
                         rs.getString("foto")
                 ),
