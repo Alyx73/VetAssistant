@@ -5,6 +5,7 @@
 package com.apr.vetserver.modelo.vo;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 
 
@@ -19,11 +20,12 @@ public class Mascota {
     private String especie;
     private String raza;
     //private LocalDate fechaNacimiento;
-    private String fechaNacimiento;
+    //private String fechaNacimiento;
+    private Date fechaNacimiento;
     private int idCliente;
     private String foto;
 
-    public Mascota(int idMascota, String nombre, String especie, String raza, String fechaNacimiento, int idCliente, String foto) {
+    public Mascota(int idMascota, String nombre, String especie, String raza, Date fechaNacimiento, int idCliente, String foto) {
         this.idMascota = idMascota;
         this.nombre = nombre;
         this.especie = especie;
@@ -66,11 +68,11 @@ public class Mascota {
         this.raza = raza;
     }
 
-    public String getFechaNacimiento() {
+    public Date getFechaNacimiento() {
         return fechaNacimiento;
     }
 
-    public void setFechaNacimiento(String fechaNacimiento) {
+    public void setFechaNacimiento(Date fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
     }
 

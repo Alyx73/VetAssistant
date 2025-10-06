@@ -31,7 +31,8 @@ public class MascotaDAO {
                         rs.getString("especie"),
                         rs.getString("raza"),
                         //rs.getDate("fechaNacimiento").toLocalDate(),
-                        rs.getString("fechaNacimiento"),
+                        //rs.getString("fechaNacimiento"),
+                        rs.getTimestamp("fechaNacimiento"),
                         rs.getInt("idCliente"),
                         rs.getString("foto")
                 )
@@ -48,7 +49,8 @@ public class MascotaDAO {
                         rs.getString("especie"),
                         rs.getString("raza"),
                         //rs.getDate("fechaNacimiento").toLocalDate(),
-                        rs.getString("fechaNacimiento"),
+                        //rs.getString("fechaNacimiento"),
+                        rs.getTimestamp("fechaNacimiento"),
                         rs.getInt("idCliente"),
                         rs.getString("foto")
                 ),
@@ -63,8 +65,8 @@ public class MascotaDAO {
                 mascota.getNombre(),
                 mascota.getEspecie(),
                 mascota.getRaza(),
-                //java.sql.Date.valueOf(mascota.getFechaNacimiento()),
                 mascota.getFechaNacimiento(),
+                //mascota.getFechaNacimiento(),
                 mascota.getIdCliente(),
                 mascota.getFoto()
         );
@@ -101,7 +103,7 @@ public class MascotaDAO {
                         rs.getString("especie"),
                         rs.getString("raza"),
                         //rs.getDate("fechaNacimiento").toLocalDate(),
-                        rs.getString("fechaNacimiento"),
+                        rs.getTimestamp("fechaNacimiento"),
                         rs.getInt("idCliente"),
                         rs.getString("foto")
                 ),
