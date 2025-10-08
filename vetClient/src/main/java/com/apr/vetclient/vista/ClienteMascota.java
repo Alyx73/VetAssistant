@@ -14,6 +14,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -394,33 +395,9 @@ public class ClienteMascota extends JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtIdClienteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtIdClienteFocusLost
-        modeloTabla.setRowCount(0);
-        try {
-            mascotas = new REST("http://localhost:8080/mascotas", Mascota.class).getPorParametro("/dueno/" + txtIdCliente.getText());
-            if (mascotas.isEmpty()) {
-                modeloTabla.setRowCount(1);
-                modeloTabla.setValueAt("Sin mascotas", 0, 1);
-            }
-            else{
-                for (Mascota m : mascotas) {
-                    /*
-                  modeloTabla.setRowCount(modeloTabla.getRowCount() + 1);
-                  modeloTabla.setValueAt(m.getIdMascota(), modeloTabla.getRowCount() -1, 0);
-                  modeloTabla.setValueAt(m.getNombre(), modeloTabla.getRowCount() -1, 1);
-                  modeloTabla.setValueAt(m.getEspecie(), modeloTabla.getRowCount() -1, 2);
-                  modeloTabla.setValueAt(m.getRaza(), modeloTabla.getRowCount() -1, 3);
-                    */
-                    modeloTabla.addRow(new Object[]{
-                        m.getIdMascota(),
-                        m.getNombre(),
-                        m.getEspecie(),
-                        m.getRaza()
-                    });
-                }
-            }
-            
-        } catch (IOException ex) {
-            Logger.getLogger(ClienteMascota.class.getName()).log(Level.SEVERE, null, ex);
+        
+        if (!txtIdCliente.getText().isBlank()) {
+            rellenarTablaMascotas();
         }
     }//GEN-LAST:event_txtIdClienteFocusLost
 
@@ -434,38 +411,38 @@ public class ClienteMascota extends JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ClienteMascota.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ClienteMascota.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ClienteMascota.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ClienteMascota.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ClienteMascota().setVisible(true);
-            }
-        });
-    }
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(ClienteMascota.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(ClienteMascota.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(ClienteMascota.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(ClienteMascota.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new ClienteMascota().setVisible(true);
+//            }
+//        });
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
@@ -522,5 +499,27 @@ public class ClienteMascota extends JFrame {
         txtFechaNacimiento.setText(mascota.getFechaNacimiento().toInstant().toString().substring(0, 10));
         txtFoto.setText(mascota.getFoto());
         
+    }
+
+    private void rellenarTablaMascotas() {
+        modeloTabla.setRowCount(0);
+        try {
+            //REST rest = new REST(mascotas.class);
+            mascotas = new REST("/mascotas", Mascota.class).getPorParametro("/dueno/" + txtIdCliente.getText());
+            if (mascotas.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Cliente sin mascotas dadas de alta actualmente.");
+                return;
+            }
+            for (Mascota m : mascotas) {
+                modeloTabla.addRow(new Object[]{
+                    m.getIdMascota(),
+                    m.getNombre(),
+                    m.getEspecie(),
+                    m.getRaza()
+                });
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ClienteMascota.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

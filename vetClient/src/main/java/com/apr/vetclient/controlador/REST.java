@@ -4,6 +4,7 @@
  */
 package com.apr.vetclient.controlador;
 
+import com.apr.vetclient.modelo.Usuario;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.*;
@@ -12,6 +13,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Clase genérica para comunicación REST entre el cliente y el servidor Spring Boot.
@@ -25,9 +27,9 @@ public class REST<T> {
     private Class<T> tipo;
     private Gson gson = new Gson();
 
-    public REST(String baseUrl, Class<T> tipo) {
+    public REST(String fragmentoPath, Class<T> tipo) {
         
-        this.baseUrl = baseUrl;
+        this.baseUrl = new ServConfig().getBaseUrl() + fragmentoPath;
         this.tipo = tipo;
     }
 
@@ -81,9 +83,8 @@ public class REST<T> {
         }
     }
 
-    // ---------------------------
-    // POST: Crear nuevo registro
-    // ---------------------------
+
+    // POST para crear nuevo registro
     public void create(T obj) throws IOException {
         URL url = new URL(baseUrl);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -131,6 +132,41 @@ public class REST<T> {
         conn.disconnect();
     }
 
+    public Usuario login(String user, String password) throws IOException {
+        URL url = new URL(baseUrl + "/login");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setDoOutput(true);
+
+    
+        //String json = String.format("{\"usuario\":\"%s\",\"password\":\"%s\"}", user, password);
+        try (OutputStream os = conn.getOutputStream()) {
+            //os.write(json.getBytes());
+            byte[] input = gson.toJson(new Usuario(user, password)).getBytes(StandardCharsets.UTF_8);
+            os.write(input, 0, input.length);
+        }
+
+        int code = conn.getResponseCode();
+
+        if (code == 200) {
+            // Login correcto → leer el usuario devuelto
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+                return gson.fromJson(reader, Usuario.class); // Devuelvo el Usuario recibido
+                
+            } finally {
+            conn.disconnect();
+        }
+        } else if (code == 401) {
+            return null; // Credenciales incorrectas
+        } else {
+            throw new IOException("Error en el servidor: " + code);
+        }
+        
+    }
+
+
+    
     // Método para comprobar si hay error en la respuesta REST
     private void verificarRespuestaRest(HttpURLConnection conn) throws IOException {
         int respuesta = conn.getResponseCode();

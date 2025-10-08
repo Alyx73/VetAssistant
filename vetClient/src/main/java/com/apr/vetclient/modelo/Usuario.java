@@ -21,6 +21,14 @@ public class Usuario {
         this.contrasena = contrasena;
         this.rol = rol;
     }
+    
+    //Cosntructor para enviar al REST-POST generico un objeto Usuario que contenga solo usuario y contraseña para el loguin
+    public Usuario(String usuario, String contrasena) {
+        this.usuario = usuario;
+        this.contrasena = contrasena;
+    }
+    
+
 
     public int getIdUsuario() {
         return idUsuario;
