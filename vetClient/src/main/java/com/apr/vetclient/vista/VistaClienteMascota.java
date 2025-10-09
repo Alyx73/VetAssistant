@@ -7,10 +7,8 @@ package com.apr.vetclient.vista;
 import com.apr.vetclient.controlador.REST;
 import com.apr.vetclient.modelo.Mascota;
 import java.io.IOException;
-import java.io.ObjectInputFilter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -21,14 +19,14 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Alex
  */
-public class ClienteMascota extends JFrame {
+public class VistaClienteMascota extends JFrame {
 
     List<Mascota> mascotas = new ArrayList<>();   // Creo esta lista global para reutilizar los objetos de la tabla y rellenar los campos de mascota
     DefaultTableModel modeloTabla = new DefaultTableModel();
     /**
      * Creates new form ClienteMascota
      */
-    public ClienteMascota() {
+    public VistaClienteMascota() {
         initComponents();
         modeloTabla = (DefaultTableModel) tablaMascotas.getModel();
         
@@ -87,7 +85,7 @@ public class ClienteMascota extends JFrame {
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(850, 600));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -408,41 +406,6 @@ public class ClienteMascota extends JFrame {
         }
     }//GEN-LAST:event_tablaMascotasMouseClicked
 
-    /**
-     * @param args the command line arguments
-     */
-//    public static void main(String args[]) {
-//        /* Set the Nimbus look and feel */
-//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-//         */
-//        try {
-//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-//                if ("Nimbus".equals(info.getName())) {
-//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//                    break;
-//                }
-//            }
-//        } catch (ClassNotFoundException ex) {
-//            java.util.logging.Logger.getLogger(ClienteMascota.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (InstantiationException ex) {
-//            java.util.logging.Logger.getLogger(ClienteMascota.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (IllegalAccessException ex) {
-//            java.util.logging.Logger.getLogger(ClienteMascota.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-//            java.util.logging.Logger.getLogger(ClienteMascota.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        }
-//        //</editor-fold>
-//        //</editor-fold>
-//
-//        /* Create and display the form */
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                new ClienteMascota().setVisible(true);
-//            }
-//        });
-//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
@@ -519,7 +482,7 @@ public class ClienteMascota extends JFrame {
                 });
             }
         } catch (IOException ex) {
-            Logger.getLogger(ClienteMascota.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(VistaClienteMascota.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

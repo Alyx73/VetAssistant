@@ -13,12 +13,12 @@ import javax.swing.JOptionPane;
  *
  * @author Alex
  */
-public class Login extends javax.swing.JFrame {
+public class VistaLogin extends javax.swing.JFrame {
 
     /**
      * Creates new form VentanaLogin
      */
-    public Login() {
+    public VistaLogin() {
         initComponents();
         this.setLocationRelativeTo(null);
     }
@@ -62,6 +62,11 @@ public class Login extends javax.swing.JFrame {
 
         btnConfiguracion.setText("Configuración");
         btnConfiguracion.setToolTipText("Abre panel para configuración de la conexión.");
+        btnConfiguracion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConfiguracionActionPerformed(evt);
+            }
+        });
 
         txtPassword.setText("jPasswordField1");
         txtPassword.setToolTipText("Introduzca su contraseña.");
@@ -121,42 +126,12 @@ public class Login extends javax.swing.JFrame {
         iniciarSesion();
     }//GEN-LAST:event_btnIniciarSesionActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
+    private void btnConfiguracionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfiguracionActionPerformed
+        
+        new VistaConfiguracion().setVisible(true);
+    }//GEN-LAST:event_btnConfiguracionActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Login().setVisible(true);
-                
-            }
-        });
-    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnConfiguracion;
@@ -176,12 +151,12 @@ public class Login extends javax.swing.JFrame {
             if (usuario != null) {          
                 JOptionPane.showMessageDialog(null, "Bienvenido, " + usuario.getUsuario());         
                 dispose();
-                new Principal(usuario).setVisible(true);
+                new VistaPrincipal(usuario).setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos.","Error de Autentificación", JOptionPane.ERROR_MESSAGE);
             }
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos.","Error de Autentificación", JOptionPane.ERROR_MESSAGE);        
+            JOptionPane.showMessageDialog(null, ex,"Error de Autentificación", JOptionPane.ERROR_MESSAGE);        
         }
     }
 }

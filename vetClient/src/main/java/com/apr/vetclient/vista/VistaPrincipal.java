@@ -10,12 +10,12 @@ import com.apr.vetclient.modelo.Usuario;
  *
  * @author Alex
  */
-public class Principal extends javax.swing.JFrame {
+public class VistaPrincipal extends javax.swing.JFrame {
 
     /**
      * Creates new form Principal
      */
-    public Principal(Usuario usuario) {
+    public VistaPrincipal(Usuario usuario) {
         initComponents();
         switch (usuario.getRol()) {
             case "VETERINARIO":
@@ -148,22 +148,24 @@ public class Principal extends javax.swing.JFrame {
 
     private void iCitasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_iCitasMouseClicked
         // TODO add your handling code here:
-        System.out.println("CITAS");
+        if (iCitas.isEnabled()) System.out.println("CITAS");
     }//GEN-LAST:event_iCitasMouseClicked
 
     private void iAdminMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_iAdminMouseClicked
         // TODO add your handling code here:
-        System.out.println("ADMIN");
+        if (iAdmin.isEnabled()) System.out.println("ADMIN");
     }//GEN-LAST:event_iAdminMouseClicked
 
     private void iFacturasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_iFacturasMouseClicked
         // TODO add your handling code here:
-        System.out.println("FACTU");
+        if (iFacturas.isEnabled()) System.out.println("FACTU");
     }//GEN-LAST:event_iFacturasMouseClicked
 
     private void iMascotasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_iMascotasMouseClicked
-        // TODO add your handling code here:
-        System.out.println("MASCOTAS");
+        
+        if (iMascotas.isEnabled()) {
+            new VistaClienteMascota().setVisible(true);
+        }
     }//GEN-LAST:event_iMascotasMouseClicked
 
 

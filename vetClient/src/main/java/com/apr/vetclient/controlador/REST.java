@@ -12,8 +12,8 @@ import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * Clase genérica para comunicación REST entre el cliente y el servidor Spring Boot.
@@ -26,11 +26,20 @@ public class REST<T> {
     private String baseUrl;
     private Class<T> tipo;
     private Gson gson = new Gson();
+    private String cabeceraAutorizacion;
 
-    public REST(String fragmentoPath, Class<T> tipo) {
+    public REST(String fragmentoPath, Class<T> tipo) throws IOException{
         
-        this.baseUrl = new ServConfig().getBaseUrl() + fragmentoPath;
+        ServConfig props = new ServConfig();
+        this.baseUrl = props.getBaseUrl() + fragmentoPath;
         this.tipo = tipo;
+        //Recojo los valores de la instancia de ServConfig que ya los ha decodificado del fichero
+//        String user = new String(Base64.getDecoder().decode(props.getUsuario()));
+//        String paswd = new String(Base64.getDecoder().decode(props.getContrasena()));
+//        String auto = user + ":" + paswd;
+        String auto = props.getUsuario() + ":" + props.getContrasena();
+        this.cabeceraAutorizacion = "Basic " + new String(Base64.getEncoder().encodeToString(auto.getBytes()));
+        
     }
 
     // GET para todos los registros
@@ -39,6 +48,7 @@ public class REST<T> {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Accept", "application/json");
+        conn.setRequestProperty("Authorization", cabeceraAutorizacion);
 
         verificarRespuestaRest(conn);
 
@@ -56,6 +66,7 @@ public class REST<T> {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Accept", "application/json");
+        conn.setRequestProperty("Authorization", cabeceraAutorizacion);
 
         verificarRespuestaRest(conn);
 
@@ -72,6 +83,7 @@ public class REST<T> {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Accept", "application/json");
+        conn.setRequestProperty("Authorization", cabeceraAutorizacion);
         
         verificarRespuestaRest(conn);
         
@@ -90,6 +102,7 @@ public class REST<T> {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");
         conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestProperty("Authorization", cabeceraAutorizacion);
         conn.setDoOutput(true);
 
         try (OutputStream os = conn.getOutputStream()) {
@@ -109,6 +122,7 @@ public class REST<T> {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("PUT");
         conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestProperty("Authorization", cabeceraAutorizacion);
         conn.setDoOutput(true);
 
         try (OutputStream os = conn.getOutputStream()) {
@@ -127,6 +141,7 @@ public class REST<T> {
         URL url = new URL(baseUrl + "/" + id);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("DELETE");
+        conn.setRequestProperty("Authorization", cabeceraAutorizacion);
 
         verificarRespuestaRest(conn);
         conn.disconnect();
@@ -137,12 +152,10 @@ public class REST<T> {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");
         conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestProperty("Authorization", cabeceraAutorizacion);
         conn.setDoOutput(true);
 
-    
-        //String json = String.format("{\"usuario\":\"%s\",\"password\":\"%s\"}", user, password);
         try (OutputStream os = conn.getOutputStream()) {
-            //os.write(json.getBytes());
             byte[] input = gson.toJson(new Usuario(user, password)).getBytes(StandardCharsets.UTF_8);
             os.write(input, 0, input.length);
         }
@@ -174,8 +187,6 @@ public class REST<T> {
             String error;
             try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getErrorStream()))) {
                 error = br.readLine();
-            } catch (Exception e) {
-                error = "Error HTTP: " + respuesta;
             }
             throw new IOException(error);
         }

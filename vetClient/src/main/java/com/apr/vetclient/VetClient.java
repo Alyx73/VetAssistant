@@ -6,11 +6,11 @@ package com.apr.vetclient;
 
 /**
  *
- * @author Portégé
+ * @author Alex
  */
 public class VetClient {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        new com.apr.vetclient.vista.VistaLogin().setVisible(true);
     }
 }

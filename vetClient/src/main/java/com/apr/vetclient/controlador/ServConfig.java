@@ -13,9 +13,8 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Clase para leer y guardar los datos de configuracion 
@@ -32,41 +31,40 @@ public class ServConfig {
     private final Path configPath = Paths.get(System.getProperty("user.home"), ".vetassistant");
     private final File file = new File(configPath.toString(), "conexion.properties");
 
-    public ServConfig() {
+    public ServConfig() throws IOException{
         leerPropiedades();
     }
 
-    private void leerPropiedades() {
-        try {
-            if (!configPath.toFile().exists()) {
-                Files.createDirectories(configPath);
-            }
+    private void leerPropiedades() throws IOException {  // Controlo las excepciones en las vistas
 
-            if (!file.exists()) {
-                guardarPropiedades("localhost", "8080", "root", "trol1230");
-                return;
-            }
-            Properties prop = new Properties();
-            try (InputStream is = new FileInputStream(file)) {
-                prop.load(is);
-            }
-            host = prop.getProperty("server.host", "localhost");
-            puerto = prop.getProperty("server.port", "8080");
-            usuario = prop.getProperty("server.user", "root");
-            contrasena = prop.getProperty("server.password", "trol230");
-
-        } catch (IOException ex) {
-            Logger.getLogger(ServConfig.class.getName()).log(Level.SEVERE, null, ex);
+        if (!configPath.toFile().exists()) {
+            Files.createDirectories(configPath);
         }
+
+        if (!file.exists()) {
+            guardarPropiedades("localhost", "8080", "root", "trol1230");
+            return;
+        }
+        Properties prop = new Properties();
+        try (InputStream is = new FileInputStream(file)) {
+            prop.load(is);
+        }
+        //Recojo los valores de  y los guardo en los atributos ya decodificados
+        host = new String(Base64.getDecoder().decode(prop.getProperty("server.host", "localhost")));
+        puerto = new String(Base64.getDecoder().decode(prop.getProperty("server.port", "8080")));
+        usuario = new String(Base64.getDecoder().decode(prop.getProperty("server.user", "root")));
+        contrasena = new String(Base64.getDecoder().decode(prop.getProperty("server.password", "trol230")));
+
     }
 
-    public void guardarPropiedades(String host, String puerto, String usuario, String contrasena) {
+    public void guardarPropiedades(String host, String puerto, String usuario, String contrasena) throws IOException{
         
         Properties prop = new Properties();
-        prop.setProperty("server.host", host);
-        prop.setProperty("server.port", puerto);
-        prop.setProperty("server.user", usuario);
-        prop.setProperty("server.password", contrasena);
+        //Guardo los valores encriptados
+        prop.setProperty("server.host", Base64.getEncoder().encodeToString(host.getBytes()));
+        prop.setProperty("server.port", Base64.getEncoder().encodeToString(puerto.getBytes()));
+        prop.setProperty("server.user", Base64.getEncoder().encodeToString(usuario.getBytes()));
+        prop.setProperty("server.password", Base64.getEncoder().encodeToString(contrasena.getBytes()));
         
         try (OutputStream os = new FileOutputStream(file)){
             prop.store(os, "Configuracion de VetServer.");
@@ -74,8 +72,6 @@ public class ServConfig {
             this.puerto = puerto;           // (dentro del try)
             this.usuario = usuario;         // si lo hago fuera y hay error no se guardan en el fichero 
             this.contrasena = contrasena;   // pero se actualizarian en la clase.
-        } catch (IOException ex) {
-            Logger.getLogger(ServConfig.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

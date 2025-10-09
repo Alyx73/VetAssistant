@@ -112,6 +112,9 @@
         <Property name="text" type="java.lang.String" value="Configuraci&#xf3;n"/>
         <Property name="toolTipText" type="java.lang.String" value="Abre panel para configuraci&#xf3;n de la conexi&#xf3;n."/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnConfiguracionActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JPasswordField" name="txtPassword">
       <Properties>
