@@ -6,7 +6,11 @@ package com.apr.vetclient.vista;
 
 import com.apr.vetclient.controlador.REST;
 import com.apr.vetclient.modelo.Usuario;
+import com.apr.vetclient.util.Idioma;
+import com.apr.vetclient.util.PreferenciasConfig;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -15,11 +19,11 @@ import javax.swing.JOptionPane;
  */
 public class VistaLogin extends javax.swing.JFrame {
 
-    /**
-     * Creates new form VentanaLogin
-     */
+    Idioma idioma;
+    
     public VistaLogin() {
         initComponents();
+        idioma = new Idioma(cargarIdioma());
         this.setLocationRelativeTo(null);
     }
 
@@ -39,6 +43,9 @@ public class VistaLogin extends javax.swing.JFrame {
         btnIniciarSesion = new javax.swing.JButton();
         btnConfiguracion = new javax.swing.JButton();
         txtPassword = new javax.swing.JPasswordField();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -70,6 +77,14 @@ public class VistaLogin extends javax.swing.JFrame {
 
         txtPassword.setText("jPasswordField1");
         txtPassword.setToolTipText("Introduzca su contraseña.");
+
+        jMenu1.setText("ión");
+        jMenuBar1.add(jMenu1);
+
+        jMenu2.setText("Idioma");
+        jMenuBar1.add(jMenu2);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -109,7 +124,7 @@ public class VistaLogin extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnConfiguracion)
                 .addContainerGap())
         );
@@ -139,13 +154,16 @@ public class VistaLogin extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextField txtUsuario;
     // End of variables declaration//GEN-END:variables
 
     private void iniciarSesion() {
         try {
-            REST rest = new REST("/usuarios", Usuario.class); // leerá la URL del config.properties
+            REST rest = new REST("/usuarios", Usuario.class);
             Usuario usuario = rest.login(txtUsuario.getText(), new String(txtPassword.getPassword()));
 
             if (usuario != null) {          
@@ -158,6 +176,16 @@ public class VistaLogin extends javax.swing.JFrame {
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(null, ex,"Error de Autentificación", JOptionPane.ERROR_MESSAGE);        
         }
+    }
+
+    private String cargarIdioma() {
+        String idioma = null;
+        try {
+            idioma =  new PreferenciasConfig().getIdioma();
+        } catch (IOException ex) {
+            Logger.getLogger(VistaLogin.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return idioma;
     }
 }
     

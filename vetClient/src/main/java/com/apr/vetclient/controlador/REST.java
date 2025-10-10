@@ -4,6 +4,7 @@
  */
 package com.apr.vetclient.controlador;
 
+import com.apr.vetclient.util.PreferenciasConfig;
 import com.apr.vetclient.modelo.Usuario;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -30,13 +31,10 @@ public class REST<T> {
 
     public REST(String fragmentoPath, Class<T> tipo) throws IOException{
         
-        ServConfig props = new ServConfig();
+        PreferenciasConfig props = new PreferenciasConfig();
         this.baseUrl = props.getBaseUrl() + fragmentoPath;
         this.tipo = tipo;
         //Recojo los valores de la instancia de ServConfig que ya los ha decodificado del fichero
-//        String user = new String(Base64.getDecoder().decode(props.getUsuario()));
-//        String paswd = new String(Base64.getDecoder().decode(props.getContrasena()));
-//        String auto = user + ":" + paswd;
         String auto = props.getUsuario() + ":" + props.getContrasena();
         this.cabeceraAutorizacion = "Basic " + new String(Base64.getEncoder().encodeToString(auto.getBytes()));
         
@@ -103,7 +101,7 @@ public class REST<T> {
         conn.setRequestMethod("POST");
         conn.setRequestProperty("Content-Type", "application/json");
         conn.setRequestProperty("Authorization", cabeceraAutorizacion);
-        conn.setDoOutput(true);
+        conn.setDoOutput(true); // Obligatorio cuando mando datos en la peticion 
 
         try (OutputStream os = conn.getOutputStream()) {
             byte[] input = gson.toJson(obj).getBytes(StandardCharsets.UTF_8);

@@ -5,7 +5,7 @@
 package com.apr.vetclient.vista;
 
 import com.apr.vetclient.controlador.REST;
-import com.apr.vetclient.controlador.ServConfig;
+import com.apr.vetclient.util.PreferenciasConfig;
 import com.apr.vetclient.modelo.Usuario;
 import java.io.IOException;
 import javax.swing.JOptionPane;
@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
  */
 public class VistaConfiguracion extends javax.swing.JFrame {
 
-    private ServConfig config;
+    private PreferenciasConfig config;   // Atento si da error al no lanzar explicitamente el constructor
     
     public VistaConfiguracion() {
         initComponents();
@@ -194,7 +194,7 @@ public class VistaConfiguracion extends javax.swing.JFrame {
             return;
         }
         try {
-            config.guardarPropiedades(txtHost.getText(), txtPuerto.getText(), txtUser.getText(), new String(txtPasswd.getPassword()));
+            config.guardarPropiedades(txtHost.getText(), txtPuerto.getText(), txtUser.getText(), new String(txtPasswd.getPassword()), config.getIdioma());
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(rootPane, "No se puedieron guardar los valores.", "Error al acceder al archivo de configuración.", JOptionPane.ERROR_MESSAGE);
         }
@@ -241,7 +241,7 @@ public class VistaConfiguracion extends javax.swing.JFrame {
 
     private void cargarValoresAlmacenados() {
         try {
-            config = new ServConfig();
+            config = new PreferenciasConfig();
             txtHost.setText(config.getHost());
             txtPuerto.setText(config.getPuerto());
             txtUser.setText(config.getUsuario());
