@@ -5,6 +5,7 @@
 package com.apr.vetclient.vista;
 
 import com.apr.vetclient.modelo.Usuario;
+import com.apr.vetclient.util.Idioma;
 
 /**
  *
@@ -17,13 +18,29 @@ public class VistaPrincipal extends javax.swing.JFrame {
      */
     public VistaPrincipal(Usuario usuario) {
         initComponents();
-        switch (usuario.getRol()) {
+        String idioma = usuario.getIdioma();
+        switch (idioma) {                   //Implemento un SWITCH para posibles ampliaciones a mas idiomas
+            case "es-ES":
+                mCastellano.setSelected(true);
+                break;
+            case "gl-ES":
+                mGalego.setSelected(true);
+                break;
+            default:
+                idioma = "es-ES";          //Valor por defecto castellano.
+                mCastellano.setSelected(true);
+        }
+        cargarTextos(idioma);
+        switch (usuario.getRol()) {    //ACtivo o desactivo funciones segun ROL de usuario
             case "VETERINARIO":
                 iAdmin.setEnabled(false);
+                mAdmin.setEnabled(false);
                 iFacturas.setEnabled(false);
+                mFacturas.setEnabled(false);       
                 break;
             case "RECEPCIONISTA":
                 iAdmin.setEnabled(false);
+                mAdmin.setEnabled(false);
                 break;
             default:
                 throw new AssertionError();
@@ -39,19 +56,22 @@ public class VistaPrincipal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        grupoRadioIdioma = new javax.swing.ButtonGroup();
         iMascotas = new javax.swing.JLabel();
         iFacturas = new javax.swing.JLabel();
         iCitas = new javax.swing.JLabel();
         iAdmin = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        menuIr = new javax.swing.JMenu();
+        mClientesMascotas = new javax.swing.JMenuItem();
+        mCitas = new javax.swing.JMenuItem();
+        mFacturas = new javax.swing.JMenuItem();
+        mAdmin = new javax.swing.JMenuItem();
+        menuIdioma = new javax.swing.JMenu();
+        mCastellano = new javax.swing.JRadioButtonMenuItem();
+        mGalego = new javax.swing.JRadioButtonMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jLabel1.setText("jLabel1");
 
         iMascotas.setIcon(new javax.swing.ImageIcon("C:\\Users\\Portégé\\Documents\\DAM\\PROYECTO\\Proyecto\\iloveimg-resized\\cliente y mascota.jpg")); // NOI18N
         iMascotas.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -85,62 +105,74 @@ public class VistaPrincipal extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("jButton1");
+        menuIr.setText("Ir a...");
 
-        jButton2.setText("jButton2");
+        mClientesMascotas.setText("Clientes/Mascotas");
+        menuIr.add(mClientesMascotas);
 
-        jButton3.setText("jButton3");
+        mCitas.setText("Citas");
+        menuIr.add(mCitas);
 
-        jButton4.setText("jButton4");
+        mFacturas.setText("Facturacion");
+        menuIr.add(mFacturas);
+
+        mAdmin.setText("Administracion");
+        menuIr.add(mAdmin);
+
+        jMenuBar1.add(menuIr);
+
+        menuIdioma.setText("Idioma");
+
+        grupoRadioIdioma.add(mCastellano);
+        mCastellano.setSelected(true);
+        mCastellano.setText("Castellano");
+        mCastellano.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mCastellanoActionPerformed(evt);
+            }
+        });
+        menuIdioma.add(mCastellano);
+
+        grupoRadioIdioma.add(mGalego);
+        mGalego.setText("Galego");
+        mGalego.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mGalegoActionPerformed(evt);
+            }
+        });
+        menuIdioma.add(mGalego);
+
+        jMenuBar1.add(menuIdioma);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(180, 180, 180)
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(iCitas, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(iMascotas, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(iFacturas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(iAdmin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addComponent(iCitas, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(iMascotas, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(iFacturas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(iAdmin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jLabel1)
-                .addGap(4, 4, 4)
+                .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(iMascotas, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(iFacturas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(35, 35, 35)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(iCitas, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(iAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton3)
-                    .addComponent(jButton4))
-                .addContainerGap(11, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -168,17 +200,49 @@ public class VistaPrincipal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_iMascotasMouseClicked
 
+    private void mCastellanoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mCastellanoActionPerformed
+
+        cargarTextos("es-ES");
+    }//GEN-LAST:event_mCastellanoActionPerformed
+
+    private void mGalegoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mGalegoActionPerformed
+        cargarTextos("gl-ES");
+    }//GEN-LAST:event_mGalegoActionPerformed
+
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup grupoRadioIdioma;
     private javax.swing.JLabel iAdmin;
     private javax.swing.JLabel iCitas;
     private javax.swing.JLabel iFacturas;
     private javax.swing.JLabel iMascotas;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem mAdmin;
+    private javax.swing.JRadioButtonMenuItem mCastellano;
+    private javax.swing.JMenuItem mCitas;
+    private javax.swing.JMenuItem mClientesMascotas;
+    private javax.swing.JMenuItem mFacturas;
+    private javax.swing.JRadioButtonMenuItem mGalego;
+    private javax.swing.JMenu menuIdioma;
+    private javax.swing.JMenu menuIr;
     // End of variables declaration//GEN-END:variables
+
+    private void cargarTextos(String idioma) {
+        Idioma i = new Idioma(idioma);
+        
+        menuIr.setText(i.texto("menu.ir"));
+        mClientesMascotas.setText(i.texto("menu.ir.clientes_mascotas"));
+        mCitas.setText(i.texto("menu.ir.citas"));
+        mFacturas.setText(i.texto("menu.ir.facturas"));
+        mAdmin.setText(i.texto("menu.ir.admin"));
+        menuIdioma.setText(i.texto("menu.idioma"));
+        mCastellano.setText(i.texto("menu.idioma.castellano"));
+        mGalego.setText(i.texto("menu.idioma.gallego"));
+        iMascotas.setToolTipText(i.texto("principal.imascotas.tip"));
+        iCitas.setToolTipText(i.texto("principal.icitas.tip"));
+        iFacturas.setToolTipText(i.texto("principal.ifacturas.tip"));
+        iAdmin.setToolTipText(i.texto("principal.iadmin.tip"));
+        
+    }
 }

@@ -17,7 +17,8 @@ public class Idioma {
     private ResourceBundle bundle;
 
     public Idioma(String idioma) {
-        this.locale = Locale.of(idioma, idioma.toUpperCase());
+        
+        this.locale = Locale.forLanguageTag(idioma);
         this.bundle = ResourceBundle.getBundle("idioma.textos", locale);
     }
 

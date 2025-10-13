@@ -23,7 +23,7 @@ public class VistaLogin extends javax.swing.JFrame {
     
     public VistaLogin() {
         initComponents();
-        idioma = new Idioma(cargarIdioma());
+        //idioma = new Idioma(cargarIdioma());
         this.setLocationRelativeTo(null);
     }
 
@@ -178,15 +178,15 @@ public class VistaLogin extends javax.swing.JFrame {
         }
     }
 
-    private String cargarIdioma() {
-        String idioma = null;
-        try {
-            idioma =  new PreferenciasConfig().getIdioma();
-        } catch (IOException ex) {
-            Logger.getLogger(VistaLogin.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return idioma;
-    }
+//    private String cargarIdioma() {
+//        String idioma = null;
+//        try {
+//            idioma =  new PreferenciasConfig().getIdioma();
+//        } catch (IOException ex) {
+//            Logger.getLogger(VistaLogin.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return idioma;
+//    }
 }
     
 

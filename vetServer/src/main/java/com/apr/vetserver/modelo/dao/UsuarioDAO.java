@@ -23,11 +23,12 @@ public class UsuarioDAO {
     // Método para listar todos los usuarios
     public List<Usuario> getUsuarios(){
         String sql = "SELECT * FROM usuario";
-        return jdbc.query(sql, (rse, rowNum)
-                -> new Usuario(rse.getInt(1),
-                        rse.getString("usuario"),
-                        rse.getString("contrasena"),
-                        rse.getString("rol")
+        return jdbc.query(sql, (rs, rowNum)
+                -> new Usuario(rs.getInt(1),
+                        rs.getString("usuario"),
+                        rs.getString("contrasena"),
+                        rs.getString("rol"),
+                        rs.getString("idioma")
                 )
         );
     }
@@ -40,7 +41,8 @@ public class UsuarioDAO {
                 -> new Usuario(rs.getInt(1),
                         rs.getString("usuario"),
                         rs.getString("contrasena"),
-                        rs.getString("rol")
+                        rs.getString("rol"),
+                        rs.getString("idioma")
                 ),id // Paso como argumento el id del usuario
         ).stream().findFirst().orElse(null);    // Recojo la primera fila y devuelvo null si esta vacía
     }
@@ -79,7 +81,8 @@ public class UsuarioDAO {
                 -> new Usuario(rs.getInt(1),
                         rs.getString("usuario"),
                         rs.getString("contrasena"),
-                        rs.getString("rol")
+                        rs.getString("rol"),
+                        rs.getString("idioma")
                 ), usuario, contrasena  // Paso como argumento el usuario y  la contraseña recibidas
         ).stream().findFirst().orElse(null);    // Recojo la primera fila y devuelvo null si esta vacía
     }

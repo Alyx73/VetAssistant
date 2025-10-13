@@ -13,13 +13,15 @@ public class Usuario {
     private int idUsuario;
     private String usuario;
     private String contrasena;
-    private String rol ;
+    private String rol;
+    private String idioma;
 
-    public Usuario(int idUsuario, String usuario, String contrasena, String rol) {
+    public Usuario(int idUsuario, String usuario, String contrasena, String rol, String idioma) {
         this.idUsuario = idUsuario;
         this.usuario = usuario;
         this.contrasena = contrasena;
         this.rol = rol;
+        this.idioma = idioma;
     }
 
     public int getIdUsuario() {
@@ -52,6 +54,14 @@ public class Usuario {
 
     public void setRol(String rol) {
         this.rol = rol;
+    }
+
+    public String getIdioma() {
+        return idioma;
+    }
+
+    public void setIdioma(String idioma) {
+        this.idioma = idioma;
     }
     
     
