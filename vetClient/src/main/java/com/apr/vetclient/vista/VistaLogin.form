@@ -135,7 +135,7 @@
     </Component>
     <Component class="javax.swing.JPasswordField" name="txtPassword">
       <Properties>
-        <Property name="text" type="java.lang.String" value="jPasswordField1"/>
+        <Property name="text" type="java.lang.String" value="vet456"/>
         <Property name="toolTipText" type="java.lang.String" value="Introduzca su contrase&#xf1;a."/>
       </Properties>
     </Component>

@@ -6,6 +6,7 @@ package com.apr.vetserver.controlador;
 
 import com.apr.vetserver.modelo.dao.ClienteDAO;
 import com.apr.vetserver.modelo.vo.Cliente;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,6 +45,21 @@ public class controladorCliente {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
             return ResponseEntity.ok(cliente);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+    
+    //GET cliente por DNI
+    @GetMapping("/dni/{dni}")
+    public ResponseEntity<List<Cliente>> getClienteByDni(@PathVariable String dni) {
+        try {
+            List<Cliente> lista = new ArrayList<>();            // lo meto en una lista para reutilizar el mismo REST generico en la app cliente
+            lista.add (clienteDAO.getClientePorDni(dni));     // (lo usa mascotas para la lista de mascotas por cliente)
+            if (lista == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+            return ResponseEntity.ok(lista);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }

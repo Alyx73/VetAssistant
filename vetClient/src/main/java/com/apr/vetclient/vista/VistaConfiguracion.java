@@ -4,9 +4,9 @@
  */
 package com.apr.vetclient.vista;
 
-import com.apr.vetclient.controlador.REST;
+import com.apr.vetclient.util.REST;
 import com.apr.vetclient.util.PreferenciasConfig;
-import com.apr.vetclient.modelo.Usuario;
+import com.apr.vetclient.modelo.vo.Usuario;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 

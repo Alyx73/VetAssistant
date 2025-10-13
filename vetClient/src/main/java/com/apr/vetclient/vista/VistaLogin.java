@@ -4,8 +4,8 @@
  */
 package com.apr.vetclient.vista;
 
-import com.apr.vetclient.controlador.REST;
-import com.apr.vetclient.modelo.Usuario;
+import com.apr.vetclient.util.REST;
+import com.apr.vetclient.modelo.vo.Usuario;
 import com.apr.vetclient.util.Idioma;
 import com.apr.vetclient.util.PreferenciasConfig;
 import java.io.IOException;
@@ -75,7 +75,7 @@ public class VistaLogin extends javax.swing.JFrame {
             }
         });
 
-        txtPassword.setText("jPasswordField1");
+        txtPassword.setText("vet456");
         txtPassword.setToolTipText("Introduzca su contraseña.");
 
         jMenu1.setText("ión");

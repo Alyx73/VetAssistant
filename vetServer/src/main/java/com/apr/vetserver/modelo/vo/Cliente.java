@@ -11,6 +11,7 @@ package com.apr.vetserver.modelo.vo;
 public class Cliente {
     
     private int idCliente;
+    private String dni;
     private String nombre;
     private String apellidos;
     private String telefono;
@@ -18,8 +19,9 @@ public class Cliente {
     private String direccion;
 
     // Constructor
-    public Cliente(int idCliente, String nombre, String apellidos, String telefono, String mail, String direccion) {
+    public Cliente(int idCliente, String dni, String nombre, String apellidos, String telefono, String mail, String direccion) {
         this.idCliente = idCliente;
+        this.dni = dni;
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.telefono = telefono;
@@ -36,6 +38,14 @@ public class Cliente {
         this.idCliente = idCliente;
     }
 
+    public String getDni() {
+        return dni;
+    }
+
+    public void setDni(String dni) {
+        this.dni = dni;
+    }
+    
     public String getNombre() {
         return nombre;
     }

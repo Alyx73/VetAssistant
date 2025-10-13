@@ -25,6 +25,7 @@ public class ClienteDAO {
         String sql = "SELECT * FROM cliente";
         return jdbc.query(sql, (rs, rowNum)
                 -> new Cliente(rs.getInt(1),
+                        rs.getString("dni"),
                         rs.getString("nombre"),
                         rs.getString("apellidos"),
                         rs.getString("telefono"),
@@ -39,6 +40,7 @@ public class ClienteDAO {
         String sql = "SELECT * FROM cliente WHERE idCliente = ?";
         return jdbc.query(sql, (rs, rowNum)
                 -> new Cliente(rs.getInt(1),
+                        rs.getString("dni"),
                         rs.getString("nombre"),
                         rs.getString("apellidos"),
                         rs.getString("telefono"),
@@ -48,11 +50,28 @@ public class ClienteDAO {
                 id // Paso como argumento el id del cliente
         ).stream().findFirst().orElse(null);    // Recojo la primera fila y devuelvo null si esta vacía
     }
-    
+
+    // Método para buscar cliente por dni
+    public Cliente getClientePorDni(String dni) {
+        String sql = "SELECT * FROM cliente WHERE dni = ?";
+        return jdbc.query(sql, (rs, rowNum)
+                -> new Cliente(rs.getInt(1),
+                        rs.getString("dni"),
+                        rs.getString("nombre"),
+                        rs.getString("apellidos"),
+                        rs.getString("telefono"),
+                        rs.getString("email"),
+                        rs.getString("direccion")
+                ),
+                dni // Paso como argumento el dni del cliente
+        ).stream().findFirst().orElse(null);    // Recojo la primera fila y devuelvo null si esta vacía
+    }
+
     // Método para insertar cliente
     public int addCliente(Cliente cliente) {
-        String sql = "INSERT INTO cliente (nombre, apellidos, telefono, email, direccion) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO cliente (dni, nombre, apellidos, telefono, email, direccion) VALUES (?, ?, ?, ?, ?, ?)";
         return jdbc.update(sql,
+                cliente.getDni(),
                 cliente.getNombre(),
                 cliente.getApellidos(),
                 cliente.getTelefono(),
@@ -63,8 +82,9 @@ public class ClienteDAO {
     
     // Método para modificar cliente
     public int updateCliente(Cliente cliente){
-        String sql = "UPDATE cliente SET nombre=?, apellidos=?, telefono=?, email=?, direccion=? WHERE idCliente = ?";
+        String sql = "UPDATE cliente SET dni=?, nombre=?, apellidos=?, telefono=?, email=?, direccion=? WHERE idCliente = ?";
         return jdbc.update(sql,
+                cliente.getDni(),
                 cliente.getNombre(),
                 cliente.getApellidos(),
                 cliente.getTelefono(),
@@ -79,4 +99,6 @@ public class ClienteDAO {
         String sql = "DELETE FROM cliente WHERE idCliente = ?";
         return jdbc.update(sql, id);
     }
+
+
 }

@@ -4,7 +4,7 @@
  */
 package com.apr.vetclient.vista;
 
-import com.apr.vetclient.modelo.Usuario;
+import com.apr.vetclient.modelo.vo.Usuario;
 import com.apr.vetclient.util.Idioma;
 
 /**
@@ -13,11 +13,11 @@ import com.apr.vetclient.util.Idioma;
  */
 public class VistaPrincipal extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Principal
-     */
+    Usuario usuario;
+    
     public VistaPrincipal(Usuario usuario) {
         initComponents();
+        this.usuario = usuario;
         String idioma = usuario.getIdioma();
         switch (idioma) {                   //Implemento un SWITCH para posibles ampliaciones a mas idiomas
             case "es-ES":
@@ -196,12 +196,14 @@ public class VistaPrincipal extends javax.swing.JFrame {
     private void iMascotasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_iMascotasMouseClicked
         
         if (iMascotas.isEnabled()) {
-            new VistaClienteMascota().setVisible(true);
+            
+            new VistaClienteMascota(this, usuario).setVisible(true);
+            this.setVisible(false);
         }
     }//GEN-LAST:event_iMascotasMouseClicked
 
     private void mCastellanoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mCastellanoActionPerformed
-
+        
         cargarTextos("es-ES");
     }//GEN-LAST:event_mCastellanoActionPerformed
 

@@ -4,13 +4,13 @@
  */
 package com.apr.vetclient.vista;
 
-import com.apr.vetclient.controlador.REST;
-import com.apr.vetclient.modelo.Mascota;
-import java.io.IOException;
+import com.apr.vetclient.modelo.dao.ClienteDAO;
+import com.apr.vetclient.modelo.dao.MascotaDAO;
+import com.apr.vetclient.modelo.vo.Cliente;
+import com.apr.vetclient.modelo.vo.Mascota;
+import com.apr.vetclient.modelo.vo.Usuario;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -20,14 +20,19 @@ import javax.swing.table.DefaultTableModel;
  * @author Alex
  */
 public class VistaClienteMascota extends JFrame {
-
-    List<Mascota> mascotas = new ArrayList<>();   // Creo esta lista global para reutilizar los objetos de la tabla y rellenar los campos de mascota
-    DefaultTableModel modeloTabla = new DefaultTableModel();
-    /**
-     * Creates new form ClienteMascota
-     */
-    public VistaClienteMascota() {
+    
+    private JFrame ventanaAnterior;
+    private Usuario usuario;
+    private List<Mascota> mascotas = new ArrayList<>();   // Creo esta lista global para reutilizar los objetos de la tabla y rellenar los campos de mascota
+    private DefaultTableModel modeloTabla = new DefaultTableModel();
+    private ClienteDAO clienteDAO = new ClienteDAO();
+    private MascotaDAO mascotaDAO = new MascotaDAO();
+    
+    public VistaClienteMascota(JFrame ventanaAnterior, Usuario usuario) {
         initComponents();
+        lblSinMascotas.setVisible(false);
+        this.ventanaAnterior = ventanaAnterior;
+        this.usuario = usuario;
         modeloTabla = (DefaultTableModel) tablaMascotas.getModel();
         
     }
@@ -44,7 +49,7 @@ public class VistaClienteMascota extends JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        txtIdCliente = new javax.swing.JTextField();
+        txtDni = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         txtNombreCliente = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
@@ -59,7 +64,7 @@ public class VistaClienteMascota extends JFrame {
         tablaMascotas = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
-        jButton1 = new javax.swing.JButton();
+        btnAlta = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
@@ -82,12 +87,18 @@ public class VistaClienteMascota extends JFrame {
         jButton7 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
+        lblSinMascotas = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(850, 600));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel1.setText("Cliente");
@@ -95,12 +106,12 @@ public class VistaClienteMascota extends JFrame {
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel2.setText("Mascota");
 
-        jLabel3.setText("Id Cliente:");
+        jLabel3.setText("DNI Cliente:");
 
-        txtIdCliente.setText("666");
-        txtIdCliente.addFocusListener(new java.awt.event.FocusAdapter() {
+        txtDni.setText("32821470X");
+        txtDni.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
-                txtIdClienteFocusLost(evt);
+                txtDniFocusLost(evt);
             }
         });
 
@@ -132,7 +143,7 @@ public class VistaClienteMascota extends JFrame {
                 {null, null, null, null}
             },
             new String [] {
-                "ID", "Nombre", "Especie", "Raza"
+                "Chip", "Nombre", "Especie", "Raza"
             }
         ) {
             Class[] types = new Class [] {
@@ -154,8 +165,13 @@ public class VistaClienteMascota extends JFrame {
         jTextArea1.setRows(5);
         jScrollPane2.setViewportView(jTextArea1);
 
-        jButton1.setText("Alta");
-        jButton1.setPreferredSize(new java.awt.Dimension(75, 23));
+        btnAlta.setText("Alta");
+        btnAlta.setPreferredSize(new java.awt.Dimension(75, 23));
+        btnAlta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAltaActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Buscar");
         jButton2.setPreferredSize(new java.awt.Dimension(75, 23));
@@ -211,6 +227,9 @@ public class VistaClienteMascota extends JFrame {
 
         jButton9.setText("Abrir nueva Consulta");
 
+        lblSinMascotas.setForeground(new java.awt.Color(255, 0, 51));
+        lblSinMascotas.setText("- Actualmente sin mascotas dadas de alta -");
+
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
 
@@ -236,15 +255,13 @@ public class VistaClienteMascota extends JFrame {
                                 .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(jLabel4)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(txtNombreCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(jLabel3)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(txtIdCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                        .addGap(18, 18, 18)
+                                            .addComponent(jLabel3)
+                                            .addComponent(jLabel4))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(txtNombreCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(txtDni, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(8, 8, 8)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(jLabel5)
                                             .addComponent(jLabel6))
@@ -262,9 +279,12 @@ public class VistaClienteMascota extends JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(19, 19, 19)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel9)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel9)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblSinMascotas))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnAlta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
@@ -276,42 +296,6 @@ public class VistaClienteMascota extends JFrame {
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel11)
-                                        .addGap(7, 7, 7)
-                                        .addComponent(txtEspecie, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel12)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(txtIdMascota, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel10)
-                                        .addGap(1, 1, 1)
-                                        .addComponent(txtNombreMascota, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel13)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(txtRaza, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jLabel14)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtFechaNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(28, 28, 28)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel16)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton9)
-                        .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -326,7 +310,44 @@ public class VistaClienteMascota extends JFrame {
                                 .addComponent(jButton7)
                                 .addGap(18, 18, 18)
                                 .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap())))))
+                                .addContainerGap())))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jLabel11)
+                                                .addGap(7, 7, 7)
+                                                .addComponent(txtEspecie, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jLabel12)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(txtIdMascota, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGap(18, 18, 18)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jLabel10)
+                                                .addGap(1, 1, 1)
+                                                .addComponent(txtNombreMascota, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jLabel13)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(txtRaza, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(jLabel14)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(txtFechaNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(28, 28, 28)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel16)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton9)))
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -341,7 +362,7 @@ public class VistaClienteMascota extends JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                             .addComponent(jLabel3)
-                            .addComponent(txtIdCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtDni, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel6)
                             .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel12)
@@ -379,7 +400,7 @@ public class VistaClienteMascota extends JFrame {
                         .addComponent(txtFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(46, 46, 46)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAlta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton3)
                     .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -391,7 +412,9 @@ public class VistaClienteMascota extends JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jLabel16)
-                        .addComponent(jLabel9))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel9)
+                            .addComponent(lblSinMascotas)))
                     .addComponent(jButton9))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -403,23 +426,35 @@ public class VistaClienteMascota extends JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtIdClienteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtIdClienteFocusLost
-        
-        if (!txtIdCliente.getText().isBlank()) {
-            rellenarTablaMascotas();
-        }
-    }//GEN-LAST:event_txtIdClienteFocusLost
-
     private void tablaMascotasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaMascotasMouseClicked
-        
         if (tablaMascotas.getSelectedRow() != -1) {  // Si hay seleccionada alguna fila
             rellenarCamposMascota(mascotas.get(tablaMascotas.getSelectedRow()));
         }
     }//GEN-LAST:event_tablaMascotasMouseClicked
 
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+        ventanaAnterior.setVisible(true);
+    }//GEN-LAST:event_formWindowClosed
+
+    private void btnAltaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAltaActionPerformed
+        if (camposClienteVacios()) {
+            JOptionPane.showMessageDialog(this, "Rellene campos");
+            return;
+        }
+        //clienteDAO.alta(new Cliente());
+    }//GEN-LAST:event_btnAltaActionPerformed
+
+    private void txtDniFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtDniFocusLost
+        lblSinMascotas.setVisible(false);
+        Cliente cliente = clienteDAO.buscarPorDni(txtDni.getText());
+        if (cliente != null) {
+            rellenarCamposCliente(cliente);
+        }
+    }//GEN-LAST:event_txtDniFocusLost
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnAlta;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
@@ -450,14 +485,15 @@ public class VistaClienteMascota extends JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JLabel lblSinMascotas;
     private javax.swing.JTable tablaMascotas;
     private javax.swing.JTextField txtApellidos;
     private javax.swing.JTextField txtDireccion;
+    private javax.swing.JTextField txtDni;
     private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtEspecie;
     private javax.swing.JTextField txtFechaNacimiento;
     private javax.swing.JLabel txtFoto;
-    private javax.swing.JTextField txtIdCliente;
     private javax.swing.JTextField txtIdMascota;
     private javax.swing.JTextField txtNombreCliente;
     private javax.swing.JTextField txtNombreMascota;
@@ -472,29 +508,34 @@ public class VistaClienteMascota extends JFrame {
         txtEspecie.setText(mascota.getEspecie());
         txtRaza.setText(mascota.getRaza());
         txtFechaNacimiento.setText(mascota.getFechaNacimiento().toInstant().toString().substring(0, 10));
-        txtFoto.setText(mascota.getFoto());
-        
+        txtFoto.setText(mascota.getFoto());     
     }
 
-    private void rellenarTablaMascotas() {
+    private boolean camposClienteVacios() {
+        return (txtNombreCliente.getText().isBlank() || txtApellidos.getText().isBlank() || txtTelefono.getText().isBlank());
+    }
+
+    private void rellenarCamposCliente(Cliente cliente) {
+        txtDni.setText(cliente.getDni());
+        txtNombreCliente.setText(cliente.getNombre());
+        txtApellidos.setText(cliente.getApellidos());
+        txtTelefono.setText(cliente.getTelefono());
+        txtDireccion.setText(cliente.getDireccion());
+        txtEmail.setText(cliente.getMail());
+        rellenarTablaMascotas(cliente.getIdCliente());   
+    }
+
+    private void rellenarTablaMascotas(int idCliente) {
         modeloTabla.setRowCount(0);
-        try {
-            //REST rest = new REST(mascotas.class);
-            mascotas = new REST("/mascotas", Mascota.class).getPorParametro("/dueno/" + txtIdCliente.getText());
-            if (mascotas.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Cliente sin mascotas dadas de alta actualmente.");
-                return;
-            }
-            for (Mascota m : mascotas) {
-                modeloTabla.addRow(new Object[]{
-                    m.getIdMascota(),
-                    m.getNombre(),
-                    m.getEspecie(),
-                    m.getRaza()
-                });
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(VistaClienteMascota.class.getName()).log(Level.SEVERE, null, ex);
+        mascotas = mascotaDAO.buscarPorDueno(idCliente);
+        lblSinMascotas.setVisible(mascotas.isEmpty());
+        for (Mascota m : mascotas) {
+            modeloTabla.addRow(new Object[]{
+                m.getIdMascota(),
+                m.getNombre(),
+                m.getEspecie(),
+                m.getRaza()
+            });
         }
     }
 }

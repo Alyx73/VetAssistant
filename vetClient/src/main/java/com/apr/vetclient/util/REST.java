@@ -2,10 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.apr.vetclient.controlador;
+package com.apr.vetclient.util;
 
 import com.apr.vetclient.util.PreferenciasConfig;
-import com.apr.vetclient.modelo.Usuario;
+import com.apr.vetclient.modelo.vo.Usuario;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.*;
@@ -41,7 +41,7 @@ public class REST<T> {
     }
 
     // GET para todos los registros
-    public List<T> getAll() throws IOException {
+    public List<T> getAll() throws IOException {    // Posibiliad de unificar .getAll y .getPorParamwetro --> ¿pierdo claridad en metodos?
         URL url = new URL(baseUrl); 
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
