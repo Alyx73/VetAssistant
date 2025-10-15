@@ -18,6 +18,7 @@ public class VistaPrincipal extends javax.swing.JFrame {
     public VistaPrincipal(Usuario usuario) {
         initComponents();
         this.usuario = usuario;
+        this.setLocationRelativeTo(null);
         String idioma = usuario.getIdioma();
         switch (idioma) {                   //Implemento un SWITCH para posibles ampliaciones a mas idiomas
             case "es-ES":
@@ -30,9 +31,11 @@ public class VistaPrincipal extends javax.swing.JFrame {
                 idioma = "es-ES";          //Valor por defecto castellano.
                 mCastellano.setSelected(true);
         }
+        // Cargo los textos del idioma seleccionado o guardado en las preferencias del usuario en la BD
         cargarTextos(idioma);
-        switch (usuario.getRol()) {    //ACtivo o desactivo funciones segun ROL de usuario
-            case "VETERINARIO":
+        // Activo o desactivo funciones segun ROL de usuario
+        switch (usuario.getRol()) {    
+            case "VETERINARIO":        //Dejo el swich aunque aquí son dos roles, me parece más visual
                 iAdmin.setEnabled(false);
                 mAdmin.setEnabled(false);
                 iFacturas.setEnabled(false);
@@ -42,8 +45,6 @@ public class VistaPrincipal extends javax.swing.JFrame {
                 iAdmin.setEnabled(false);
                 mAdmin.setEnabled(false);
                 break;
-            default:
-                throw new AssertionError();
         }
     }
 
@@ -72,6 +73,11 @@ public class VistaPrincipal extends javax.swing.JFrame {
         mGalego = new javax.swing.JRadioButtonMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+        });
 
         iMascotas.setIcon(new javax.swing.ImageIcon("C:\\Users\\Portégé\\Documents\\DAM\\PROYECTO\\Proyecto\\iloveimg-resized\\cliente y mascota.jpg")); // NOI18N
         iMascotas.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -203,13 +209,18 @@ public class VistaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_iMascotasMouseClicked
 
     private void mCastellanoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mCastellanoActionPerformed
-        
+        usuario.setIdioma("es-ES");
         cargarTextos("es-ES");
     }//GEN-LAST:event_mCastellanoActionPerformed
 
     private void mGalegoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mGalegoActionPerformed
         cargarTextos("gl-ES");
+        usuario.setIdioma("gl-ES");
     }//GEN-LAST:event_mGalegoActionPerformed
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+        // Guardar preferencias usuario
+    }//GEN-LAST:event_formWindowClosed
 
 
 

@@ -9,11 +9,18 @@ import com.apr.vetclient.modelo.dao.MascotaDAO;
 import com.apr.vetclient.modelo.vo.Cliente;
 import com.apr.vetclient.modelo.vo.Mascota;
 import com.apr.vetclient.modelo.vo.Usuario;
+import com.apr.vetclient.util.Idioma;
+import java.io.IOException;
+import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumnModel;
 
 /**
  *
@@ -30,11 +37,17 @@ public class VistaClienteMascota extends JFrame {
     
     public VistaClienteMascota(JFrame ventanaAnterior, Usuario usuario) {
         initComponents();
-        lblSinMascotas.setVisible(false);
+        this.setLocationRelativeTo(null);
         this.ventanaAnterior = ventanaAnterior;
         this.usuario = usuario;
         modeloTabla = (DefaultTableModel) tablaMascotas.getModel();
-        
+        cargarTextos(usuario.getIdioma());
+        lblSinMascotas.setVisible(false);
+        switch (usuario.getRol()) {      
+            case "RECEPCIONISTA":                   // Dejo el switch por posibles nuevos roles o funciones en la app.
+                btnConsulta.setEnabled(false);    // con varias roles es más visual
+                break;
+        }
     }
 
     /**
@@ -46,47 +59,47 @@ public class VistaClienteMascota extends JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        lblCliente = new javax.swing.JLabel();
+        lblMascota = new javax.swing.JLabel();
+        lblDni = new javax.swing.JLabel();
         txtDni = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
+        lblNombreCliente = new javax.swing.JLabel();
         txtNombreCliente = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
+        lblApellidos = new javax.swing.JLabel();
         txtApellidos = new javax.swing.JTextField();
-        jLabel6 = new javax.swing.JLabel();
+        lblTfno = new javax.swing.JLabel();
         txtTelefono = new javax.swing.JTextField();
-        jLabel7 = new javax.swing.JLabel();
+        lblEmail = new javax.swing.JLabel();
         txtEmail = new javax.swing.JTextField();
-        jLabel8 = new javax.swing.JLabel();
+        lblDireccion = new javax.swing.JLabel();
         txtDireccion = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaMascotas = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
-        btnAlta = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jLabel9 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
+        btnAltaCliente = new javax.swing.JButton();
+        btnBuscarCliente = new javax.swing.JButton();
+        btnModificarCliente = new javax.swing.JButton();
+        btnEliminarCliente = new javax.swing.JButton();
+        lblMascotasCliente = new javax.swing.JLabel();
+        lblNombreMascota = new javax.swing.JLabel();
         txtNombreMascota = new javax.swing.JTextField();
-        jLabel11 = new javax.swing.JLabel();
+        lblEspecie = new javax.swing.JLabel();
         txtEspecie = new javax.swing.JTextField();
-        jLabel12 = new javax.swing.JLabel();
-        txtIdMascota = new javax.swing.JTextField();
-        jLabel13 = new javax.swing.JLabel();
+        lvlChip = new javax.swing.JLabel();
+        txtChip = new javax.swing.JTextField();
+        lblRaza = new javax.swing.JLabel();
         txtRaza = new javax.swing.JTextField();
-        jLabel14 = new javax.swing.JLabel();
+        lblFechaNacimiento = new javax.swing.JLabel();
         txtFechaNacimiento = new javax.swing.JTextField();
         txtFoto = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
-        jLabel16 = new javax.swing.JLabel();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
-        jButton9 = new javax.swing.JButton();
+        lblHistorial = new javax.swing.JLabel();
+        btnAltaMascota = new javax.swing.JButton();
+        btnBuscarMascota = new javax.swing.JButton();
+        btnModificarMascota = new javax.swing.JButton();
+        btnEliminarMascota = new javax.swing.JButton();
+        btnConsulta = new javax.swing.JButton();
         lblSinMascotas = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -100,13 +113,13 @@ public class VistaClienteMascota extends JFrame {
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel1.setText("Cliente");
+        lblCliente.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        lblCliente.setText("Cliente");
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel2.setText("Mascota");
+        lblMascota.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        lblMascota.setText("Mascota");
 
-        jLabel3.setText("DNI Cliente:");
+        lblDni.setText("DNI Cliente:");
 
         txtDni.setText("32821470X");
         txtDni.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -115,23 +128,23 @@ public class VistaClienteMascota extends JFrame {
             }
         });
 
-        jLabel4.setText("Nombre:");
+        lblNombreCliente.setText("Nombre:");
 
         txtNombreCliente.setText("Alejandro");
 
-        jLabel5.setText("Apellidos:");
+        lblApellidos.setText("Apellidos:");
 
         txtApellidos.setText("Piñero Rumbo");
 
-        jLabel6.setText("Tfno:");
+        lblTfno.setText("Tfno:");
 
         txtTelefono.setText("619313131");
 
-        jLabel7.setText("Email:");
+        lblEmail.setText("Email:");
 
         txtEmail.setText("alex.pinero.rumbo@gmail.com");
 
-        jLabel8.setText("Dirección:");
+        lblDireccion.setText("Dirección:");
 
         txtDireccion.setText("Av. Oza 88 2º IZQ");
 
@@ -165,42 +178,42 @@ public class VistaClienteMascota extends JFrame {
         jTextArea1.setRows(5);
         jScrollPane2.setViewportView(jTextArea1);
 
-        btnAlta.setText("Alta");
-        btnAlta.setPreferredSize(new java.awt.Dimension(75, 23));
-        btnAlta.addActionListener(new java.awt.event.ActionListener() {
+        btnAltaCliente.setText("Alta");
+        btnAltaCliente.setPreferredSize(new java.awt.Dimension(75, 23));
+        btnAltaCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAltaActionPerformed(evt);
+                btnAltaClienteActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Buscar");
-        jButton2.setPreferredSize(new java.awt.Dimension(75, 23));
+        btnBuscarCliente.setText("Buscar");
+        btnBuscarCliente.setPreferredSize(new java.awt.Dimension(75, 23));
 
-        jButton3.setText("Modificar");
+        btnModificarCliente.setText("Modificar");
 
-        jButton4.setText("Eliminar");
-        jButton4.setPreferredSize(new java.awt.Dimension(75, 23));
+        btnEliminarCliente.setText("Eliminar");
+        btnEliminarCliente.setPreferredSize(new java.awt.Dimension(75, 23));
 
-        jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel9.setText("Mascotas del Cliente:");
+        lblMascotasCliente.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        lblMascotasCliente.setText("Mascotas del Cliente:");
 
-        jLabel10.setText("Nombre:");
+        lblNombreMascota.setText("Nombre:");
 
         txtNombreMascota.setText("Pancho");
 
-        jLabel11.setText("Especie:");
+        lblEspecie.setText("Especie:");
 
         txtEspecie.setText("Perro");
 
-        jLabel12.setText("Id Mascota:");
+        lvlChip.setText("NºChip:");
 
-        txtIdMascota.setText("666");
+        txtChip.setText("666");
 
-        jLabel13.setText("Raza:");
+        lblRaza.setText("Raza:");
 
         txtRaza.setText("Palleiro");
 
-        jLabel14.setText("Cumpleaños:");
+        lblFechaNacimiento.setText("Fecha de nacimiento:");
 
         txtFechaNacimiento.setText("16/06/2025");
 
@@ -211,22 +224,23 @@ public class VistaClienteMascota extends JFrame {
 
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
-        jLabel16.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel16.setText("Historial Clínico:");
+        lblHistorial.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        lblHistorial.setText("Historial Clínico:");
 
-        jButton5.setText("Alta");
-        jButton5.setPreferredSize(new java.awt.Dimension(75, 23));
+        btnAltaMascota.setText("Alta");
+        btnAltaMascota.setPreferredSize(new java.awt.Dimension(75, 23));
 
-        jButton6.setText("Buscar");
-        jButton6.setPreferredSize(new java.awt.Dimension(75, 23));
+        btnBuscarMascota.setText("Buscar");
+        btnBuscarMascota.setPreferredSize(new java.awt.Dimension(75, 23));
 
-        jButton7.setText("Modificar");
+        btnModificarMascota.setText("Modificar");
 
-        jButton8.setText("Eliminar");
-        jButton8.setPreferredSize(new java.awt.Dimension(75, 23));
+        btnEliminarMascota.setText("Eliminar");
+        btnEliminarMascota.setPreferredSize(new java.awt.Dimension(75, 23));
 
-        jButton9.setText("Abrir nueva Consulta");
+        btnConsulta.setText("Abrir nueva Consulta");
 
+        lblSinMascotas.setFont(new java.awt.Font("Segoe UI", 1, 10)); // NOI18N
         lblSinMascotas.setForeground(new java.awt.Color(255, 0, 51));
         lblSinMascotas.setText("- Actualmente sin mascotas dadas de alta -");
 
@@ -247,52 +261,50 @@ public class VistaClienteMascota extends JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                    .addComponent(jLabel8)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(txtDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel3)
-                                            .addComponent(jLabel4))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(txtNombreCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(txtDni, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(8, 8, 8)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel5)
-                                            .addComponent(jLabel6))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                            .addComponent(txtApellidos, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addComponent(jLabel7)
-                                        .addGap(27, 27, 27)
-                                        .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addComponent(jLabel1)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblDireccion)
+                                    .addComponent(lblEmail))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txtEmail, javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
+                                    .addComponent(txtDireccion)))
+                            .addComponent(lblCliente)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(19, 19, 19)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 377, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnAltaCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnBuscarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnModificarCliente)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnEliminarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblMascotasCliente)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(lblSinMascotas, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(8, 8, 8))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel9)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(lblSinMascotas))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnAlta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton3)
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 377, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(lblDni)
+                            .addComponent(lblNombreCliente))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtNombreCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtDni, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(8, 8, 8)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblApellidos)
+                            .addComponent(lblTfno))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtApellidos, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -303,50 +315,50 @@ public class VistaClienteMascota extends JFrame {
                                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 364, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(7, 7, 7))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnAltaMascota, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnBuscarMascota, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jButton7)
+                                .addComponent(btnModificarMascota)
                                 .addGap(18, 18, 18)
-                                .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnEliminarMascota, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap())))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel2)
+                                    .addComponent(lblMascota)
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                             .addGroup(layout.createSequentialGroup()
-                                                .addComponent(jLabel11)
+                                                .addComponent(lblEspecie)
                                                 .addGap(7, 7, 7)
                                                 .addComponent(txtEspecie, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(jLabel12)
+                                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                                .addComponent(lvlChip)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(txtIdMascota, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                .addComponent(txtChip, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                         .addGap(18, 18, 18)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                             .addGroup(layout.createSequentialGroup()
-                                                .addComponent(jLabel10)
+                                                .addComponent(lblNombreMascota)
                                                 .addGap(1, 1, 1)
                                                 .addComponent(txtNombreMascota, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
                                             .addGroup(layout.createSequentialGroup()
-                                                .addComponent(jLabel13)
+                                                .addComponent(lblRaza)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(txtRaza, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))))
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(jLabel14)
+                                        .addComponent(lblFechaNacimiento)
                                         .addGap(18, 18, 18)
                                         .addComponent(txtFechaNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(28, 28, 28)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel16)
+                                .addComponent(lblHistorial)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton9)))
+                                .addComponent(btnConsulta)))
                         .addContainerGap())))
         );
         layout.setVerticalGroup(
@@ -357,65 +369,67 @@ public class VistaClienteMascota extends JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2))
+                            .addComponent(lblCliente)
+                            .addComponent(lblMascota))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                            .addComponent(jLabel3)
-                            .addComponent(txtDni, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6)
-                            .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel12)
-                            .addComponent(txtIdMascota, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel10)
-                            .addComponent(txtNombreMascota, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel5)
-                                    .addComponent(txtApellidos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel4)
-                                    .addComponent(txtNombreCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel7)
-                                    .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                                    .addComponent(lvlChip)
+                                    .addComponent(txtChip, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(lblNombreMascota)
+                                    .addComponent(txtNombreMascota, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel8)
-                                    .addComponent(txtDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel11)
+                                    .addComponent(lblEspecie)
                                     .addComponent(txtEspecie, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel13)
+                                    .addComponent(lblRaza)
                                     .addComponent(txtRaza, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel14)
-                                    .addComponent(txtFechaNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(lblFechaNacimiento)
+                                    .addComponent(txtFechaNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                                    .addComponent(lblDni)
+                                    .addComponent(txtDni, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(lblTfno)
+                                    .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(lblApellidos)
+                                    .addComponent(txtApellidos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(lblNombreCliente)
+                                    .addComponent(txtNombreCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(lblEmail)
+                                    .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(lblDireccion)
+                                    .addComponent(txtDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(25, 25, 25))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(txtFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(46, 46, 46)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(btnAlta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3)
-                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton7)
-                    .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnAltaCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnBuscarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnModificarCliente)
+                    .addComponent(btnEliminarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAltaMascota, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnBuscarMascota, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnModificarMascota)
+                    .addComponent(btnEliminarMascota, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel16)
+                        .addComponent(lblHistorial)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel9)
+                            .addComponent(lblMascotasCliente)
                             .addComponent(lblSinMascotas)))
-                    .addComponent(jButton9))
+                    .addComponent(btnConsulta))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
@@ -436,13 +450,23 @@ public class VistaClienteMascota extends JFrame {
         ventanaAnterior.setVisible(true);
     }//GEN-LAST:event_formWindowClosed
 
-    private void btnAltaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAltaActionPerformed
+    private void btnAltaClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAltaClienteActionPerformed
         if (camposClienteVacios()) {
             JOptionPane.showMessageDialog(this, "Rellene campos");
             return;
         }
-        //clienteDAO.alta(new Cliente());
-    }//GEN-LAST:event_btnAltaActionPerformed
+        try {
+            clienteDAO.alta(new Cliente(0, txtDni.getText(), txtNombreCliente.getText(), txtApellidos.getText(),
+                    txtTelefono.getText(), txtEmail.getText(), txtDireccion.getText()));
+            JOptionPane.showMessageDialog(this, "ok");
+        } catch (ConnectException ex) {
+            JOptionPane.showMessageDialog(this, "Sin conexion");
+        } catch (IOException ex) {
+            
+            JOptionPane.showMessageDialog(this, "dni duplicado");
+        }
+        
+    }//GEN-LAST:event_btnAltaClienteActionPerformed
 
     private void txtDniFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtDniFocusLost
         lblSinMascotas.setVisible(false);
@@ -454,30 +478,15 @@ public class VistaClienteMascota extends JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAlta;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
-    private javax.swing.JButton jButton9;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
+    private javax.swing.JButton btnAltaCliente;
+    private javax.swing.JButton btnAltaMascota;
+    private javax.swing.JButton btnBuscarCliente;
+    private javax.swing.JButton btnBuscarMascota;
+    private javax.swing.JButton btnConsulta;
+    private javax.swing.JButton btnEliminarCliente;
+    private javax.swing.JButton btnEliminarMascota;
+    private javax.swing.JButton btnModificarCliente;
+    private javax.swing.JButton btnModificarMascota;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
@@ -485,16 +494,31 @@ public class VistaClienteMascota extends JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JLabel lblApellidos;
+    private javax.swing.JLabel lblCliente;
+    private javax.swing.JLabel lblDireccion;
+    private javax.swing.JLabel lblDni;
+    private javax.swing.JLabel lblEmail;
+    private javax.swing.JLabel lblEspecie;
+    private javax.swing.JLabel lblFechaNacimiento;
+    private javax.swing.JLabel lblHistorial;
+    private javax.swing.JLabel lblMascota;
+    private javax.swing.JLabel lblMascotasCliente;
+    private javax.swing.JLabel lblNombreCliente;
+    private javax.swing.JLabel lblNombreMascota;
+    private javax.swing.JLabel lblRaza;
     private javax.swing.JLabel lblSinMascotas;
+    private javax.swing.JLabel lblTfno;
+    private javax.swing.JLabel lvlChip;
     private javax.swing.JTable tablaMascotas;
     private javax.swing.JTextField txtApellidos;
+    private javax.swing.JTextField txtChip;
     private javax.swing.JTextField txtDireccion;
     private javax.swing.JTextField txtDni;
     private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtEspecie;
     private javax.swing.JTextField txtFechaNacimiento;
     private javax.swing.JLabel txtFoto;
-    private javax.swing.JTextField txtIdMascota;
     private javax.swing.JTextField txtNombreCliente;
     private javax.swing.JTextField txtNombreMascota;
     private javax.swing.JTextField txtRaza;
@@ -503,7 +527,7 @@ public class VistaClienteMascota extends JFrame {
 
     private void rellenarCamposMascota(Mascota mascota) {
         
-        txtIdMascota.setText(String.valueOf(mascota.getIdMascota()));
+        txtChip.setText(String.valueOf(mascota.getIdMascota()));
         txtNombreMascota.setText(mascota.getNombre());
         txtEspecie.setText(mascota.getEspecie());
         txtRaza.setText(mascota.getRaza());
@@ -537,5 +561,27 @@ public class VistaClienteMascota extends JFrame {
                 m.getRaza()
             });
         }
+    }
+
+    private void cargarTextos(String idioma) {
+        Idioma i = new Idioma(idioma);
+        
+        lblCliente.setText(i.texto("cm.cliente"));
+        lblDni.setText(i.texto("cm.dni"));
+        lblTfno.setText(i.texto("cm.tfno"));
+        lblNombreCliente.setText(i.texto("cm.nombre") + ":");
+        lblApellidos.setText(i.texto("cm.apellidos"));
+        lblEmail.setText(i.texto("cm.email"));
+        lblDireccion.setText(i.texto("cm.direccion"));
+        lblMascotasCliente.setText(i.texto("cm.mascotas_cliente"));
+        lblSinMascotas.setText(i.texto("cm.sinmascotas"));
+        //Para las cabeceras de la tabla
+        JTableHeader cabecera = tablaMascotas.getTableHeader();
+        TableColumnModel columnas = cabecera.getColumnModel();
+        columnas.getColumn(0).setHeaderValue(i.texto("cm.chip"));
+        columnas.getColumn(1).setHeaderValue(i.texto("cm.nombre"));
+        columnas.getColumn(2).setHeaderValue(i.texto("cm.especie"));
+        columnas.getColumn(3).setHeaderValue(i.texto("cm.raza"));
+               
     }
 }

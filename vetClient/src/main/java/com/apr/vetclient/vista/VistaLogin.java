@@ -4,10 +4,10 @@
  */
 package com.apr.vetclient.vista;
 
+import com.apr.vetclient.modelo.dao.UsuarioDAO;
 import com.apr.vetclient.util.REST;
 import com.apr.vetclient.modelo.vo.Usuario;
 import com.apr.vetclient.util.Idioma;
-import com.apr.vetclient.util.PreferenciasConfig;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -133,12 +133,23 @@ public class VistaLogin extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnIniciarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarSesionActionPerformed
-        
+
         if (txtUsuario.getText().isBlank() || txtPassword.getPassword().toString().isBlank()) {// Evito espacios vacios con isBlank() en vez de isEmpty()
             JOptionPane.showMessageDialog(null, "Por favor introduzca usuario y contraseña.");
             return;
-        }  
-        iniciarSesion();
+        }
+        try {
+            Usuario usuario = new UsuarioDAO().iniciarSesion(txtUsuario.getText(), new String(txtPassword.getPassword()));
+            if (usuario != null) {
+                JOptionPane.showMessageDialog(null, "Bienvenido, " + usuario.getUsuario());
+                dispose();
+                new VistaPrincipal(usuario).setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos.", "Error de Autentificación", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, ex, "Error de Autentificación", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnIniciarSesionActionPerformed
 
     private void btnConfiguracionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfiguracionActionPerformed

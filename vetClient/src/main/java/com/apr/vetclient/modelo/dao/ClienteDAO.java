@@ -25,6 +25,10 @@ public class ClienteDAO {
         }
         return cli;
     }
+
+    public void alta(Cliente cliente) throws IOException {
+        new REST("/clientes", Cliente.class).create(cliente);
+    }
     
     
     
