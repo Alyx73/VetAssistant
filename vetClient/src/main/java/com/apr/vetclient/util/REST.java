@@ -4,7 +4,6 @@
  */
 package com.apr.vetclient.util;
 
-import com.apr.vetclient.util.PreferenciasConfig;
 import com.apr.vetclient.modelo.vo.Usuario;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -112,9 +111,7 @@ public class REST<T> {
         conn.disconnect();
     }
 
-    // ---------------------------
-    // PUT: Actualizar registro
-    // ---------------------------
+    // PUT para actualizar registro
     public void update(int id, T obj) throws IOException {
         URL url = new URL(baseUrl + "/" + id);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();

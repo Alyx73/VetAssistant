@@ -10,6 +10,8 @@ import com.apr.vetclient.modelo.vo.Cliente;
 import com.apr.vetclient.modelo.vo.Mascota;
 import com.apr.vetclient.modelo.vo.Usuario;
 import com.apr.vetclient.util.Idioma;
+import java.awt.Color;
+import java.awt.Component;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
@@ -30,6 +33,7 @@ public class VistaClienteMascota extends JFrame {
     
     private JFrame ventanaAnterior;
     private Usuario usuario;
+    private Idioma i;  // Preferencia de idioma para textos
     private List<Mascota> mascotas = new ArrayList<>();   // Creo esta lista global para reutilizar los objetos de la tabla y rellenar los campos de mascota
     private DefaultTableModel modeloTabla = new DefaultTableModel();
     private ClienteDAO clienteDAO = new ClienteDAO();
@@ -40,12 +44,14 @@ public class VistaClienteMascota extends JFrame {
         this.setLocationRelativeTo(null);
         this.ventanaAnterior = ventanaAnterior;
         this.usuario = usuario;
+        this.i = new Idioma(usuario.getIdioma());
         modeloTabla = (DefaultTableModel) tablaMascotas.getModel();
+        modeloTabla.setRowCount(0);
         cargarTextos(usuario.getIdioma());
         lblSinMascotas.setVisible(false);
         switch (usuario.getRol()) {      
             case "RECEPCIONISTA":                   // Dejo el switch por posibles nuevos roles o funciones en la app.
-                btnConsulta.setEnabled(false);    // con varias roles es más visual
+                btnConsulta.setEnabled(false);    // con varios roles es más visual el switch
                 break;
         }
     }
@@ -127,26 +133,66 @@ public class VistaClienteMascota extends JFrame {
                 txtDniFocusLost(evt);
             }
         });
+        txtDni.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtDniKeyTyped(evt);
+            }
+        });
 
         lblNombreCliente.setText("Nombre:");
 
         txtNombreCliente.setText("Alejandro");
+        txtNombreCliente.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNombreClienteKeyTyped(evt);
+            }
+        });
 
         lblApellidos.setText("Apellidos:");
 
         txtApellidos.setText("Piñero Rumbo");
+        txtApellidos.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtApellidosKeyTyped(evt);
+            }
+        });
 
         lblTfno.setText("Tfno:");
 
         txtTelefono.setText("619313131");
+        txtTelefono.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtTelefonoFocusLost(evt);
+            }
+        });
+        txtTelefono.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtTelefonoKeyTyped(evt);
+            }
+        });
 
         lblEmail.setText("Email:");
 
         txtEmail.setText("alex.pinero.rumbo@gmail.com");
+        txtEmail.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtEmailFocusLost(evt);
+            }
+        });
+        txtEmail.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtEmailKeyTyped(evt);
+            }
+        });
 
         lblDireccion.setText("Dirección:");
 
         txtDireccion.setText("Av. Oza 88 2º IZQ");
+        txtDireccion.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtDireccionKeyTyped(evt);
+            }
+        });
 
         tablaMascotas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -190,6 +236,11 @@ public class VistaClienteMascota extends JFrame {
         btnBuscarCliente.setPreferredSize(new java.awt.Dimension(75, 23));
 
         btnModificarCliente.setText("Modificar");
+        btnModificarCliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModificarClienteActionPerformed(evt);
+            }
+        });
 
         btnEliminarCliente.setText("Eliminar");
         btnEliminarCliente.setPreferredSize(new java.awt.Dimension(75, 23));
@@ -451,30 +502,107 @@ public class VistaClienteMascota extends JFrame {
     }//GEN-LAST:event_formWindowClosed
 
     private void btnAltaClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAltaClienteActionPerformed
-        if (camposClienteVacios()) {
-            JOptionPane.showMessageDialog(this, "Rellene campos");
+        if (camposVacios(txtNombreCliente, txtApellidos, txtTelefono, txtDireccion, txtEmail)) {
+            JOptionPane.showMessageDialog(this, i.texto("error.camposvacios"));
             return;
         }
         try {
             clienteDAO.alta(new Cliente(0, txtDni.getText(), txtNombreCliente.getText(), txtApellidos.getText(),
                     txtTelefono.getText(), txtEmail.getText(), txtDireccion.getText()));
-            JOptionPane.showMessageDialog(this, "ok");
+            JOptionPane.showMessageDialog(this, i.texto("cm.cliente.altaok"));
         } catch (ConnectException ex) {
-            JOptionPane.showMessageDialog(this, "Sin conexion");
+            JOptionPane.showMessageDialog(this,i.texto("error.conexion.ms"),i.texto("error.conexion.titulo"), 
+                    JOptionPane.ERROR_MESSAGE);
         } catch (IOException ex) {
-            
-            JOptionPane.showMessageDialog(this, "dni duplicado");
+            JOptionPane.showMessageDialog(this, i.texto("error.cliente.existe"));
         }
         
     }//GEN-LAST:event_btnAltaClienteActionPerformed
 
     private void txtDniFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtDniFocusLost
         lblSinMascotas.setVisible(false);
-        Cliente cliente = clienteDAO.buscarPorDni(txtDni.getText());
-        if (cliente != null) {
-            rellenarCamposCliente(cliente);
+        if (!txtDni.getText().isBlank()) {
+            if (!validarDni(txtDni.getText())) {
+                JOptionPane.showMessageDialog(this,i.texto("error.formato") + " DNI.");
+                txtDni.requestFocus();
+                txtDni.setBackground(Color.PINK);
+                
+            }
+            Cliente cliente = clienteDAO.buscarPorDni(txtDni.getText());
+            if (cliente != null) {
+                rellenarCamposCliente(cliente);
+            }       
         }
     }//GEN-LAST:event_txtDniFocusLost
+
+    private void txtDniKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDniKeyTyped
+        txtDni.setBackground(Color.WHITE);
+        vaciarCampos();
+        
+    }//GEN-LAST:event_txtDniKeyTyped
+
+    private void txtTelefonoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtTelefonoFocusLost
+        if (!txtTelefono.getText().isBlank()) {
+            if (!txtTelefono.getText().matches("[0-9]{9}")) {
+                JOptionPane.showMessageDialog(this, i.texto("error.formato") + " teléfono.");
+                txtTelefono.requestFocus();
+                txtTelefono.setBackground(Color.PINK);
+            }
+        }
+    }//GEN-LAST:event_txtTelefonoFocusLost
+    
+    private void txtTelefonoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelefonoKeyTyped
+        txtTelefono.setBackground(Color.WHITE);
+    }//GEN-LAST:event_txtTelefonoKeyTyped
+
+    private void txtNombreClienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreClienteKeyTyped
+        txtNombreCliente.setBackground(Color.WHITE);
+    }//GEN-LAST:event_txtNombreClienteKeyTyped
+
+    private void txtApellidosKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtApellidosKeyTyped
+        txtApellidos.setBackground(Color.WHITE);
+    }//GEN-LAST:event_txtApellidosKeyTyped
+
+    private void txtEmailKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEmailKeyTyped
+        txtEmail.setBackground(Color.WHITE);
+    }//GEN-LAST:event_txtEmailKeyTyped
+
+    private void txtDireccionKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDireccionKeyTyped
+        txtDireccion.setBackground(Color.WHITE);
+    }//GEN-LAST:event_txtDireccionKeyTyped
+
+    private void txtEmailFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtEmailFocusLost
+        if (!txtEmail.getText().isBlank()) {
+            if (!txtEmail.getText().matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
+                JOptionPane.showMessageDialog(this, i.texto("error.formato") + " email.");
+                txtEmail.requestFocus();
+                txtEmail.setBackground(Color.PINK);
+            }
+        }
+    }//GEN-LAST:event_txtEmailFocusLost
+
+    private void btnModificarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarClienteActionPerformed
+        if (camposVacios(txtNombreCliente, txtApellidos, txtTelefono, txtDireccion, txtEmail)) {
+            JOptionPane.showMessageDialog(this, i.texto("error.camposvacios"));
+            return;
+        }
+        try {
+            Cliente cli = clienteDAO.buscarPorDni(txtDni.getText());
+            if (cli == null) {
+                JOptionPane.showMessageDialog(this, i.texto("error.cliente.noexiste"));
+                return;
+            }
+            clienteDAO.modificar(cli.getIdCliente(), new Cliente(0, txtDni.getText(), txtNombreCliente.getText(), txtApellidos.getText(),
+                    txtTelefono.getText(), txtEmail.getText(), txtDireccion.getText()));
+            JOptionPane.showMessageDialog(this, i.texto("cm.cliente.modificacionok"));
+//        } catch (ConnectException ex) {
+//            JOptionPane.showMessageDialog(this,i.texto("error.conexion.mensaje"),i.texto("error.conexion.titulo"), 
+//                    JOptionPane.ERROR_MESSAGE);
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this,i.texto("error.conexion.mensaje"),i.texto("error.conexion.titulo"), 
+                    JOptionPane.ERROR_MESSAGE);
+        }    
+    }//GEN-LAST:event_btnModificarClienteActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -526,17 +654,12 @@ public class VistaClienteMascota extends JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void rellenarCamposMascota(Mascota mascota) {
-        
         txtChip.setText(String.valueOf(mascota.getIdMascota()));
         txtNombreMascota.setText(mascota.getNombre());
         txtEspecie.setText(mascota.getEspecie());
         txtRaza.setText(mascota.getRaza());
         txtFechaNacimiento.setText(mascota.getFechaNacimiento().toInstant().toString().substring(0, 10));
         txtFoto.setText(mascota.getFoto());     
-    }
-
-    private boolean camposClienteVacios() {
-        return (txtNombreCliente.getText().isBlank() || txtApellidos.getText().isBlank() || txtTelefono.getText().isBlank());
     }
 
     private void rellenarCamposCliente(Cliente cliente) {
@@ -584,4 +707,45 @@ public class VistaClienteMascota extends JFrame {
         columnas.getColumn(3).setHeaderValue(i.texto("cm.raza"));
                
     }
+
+    private boolean validarDni(String dni) {
+        if (!dni.matches("^[0-9]{8}[a-zA-Z]$")) {
+            return false;
+        } 
+        String letras = "TRWAGMYFPDXBNJZSQVHLCKE";
+        int numero = Integer.parseInt(dni.substring(0, 8));
+        
+        return (dni.toUpperCase().charAt(8) == letras.charAt(numero % 23));
+    }
+
+    private boolean camposVacios(JTextField... campos) { // Uso esta nomenclatura para reutilizar el método con número de campos variable
+        boolean focoPuesto = false;
+        boolean vacios = false;
+        for (JTextField campo : campos) {
+            
+            if (campo.getText().isBlank()){
+                campo.setBackground(Color.PINK);
+                if (!focoPuesto) {
+                    campo.requestFocus();
+                    focoPuesto = true;
+                }
+                vacios = true;
+            } 
+        }
+        return vacios;
+    }
+
+    private void vaciarCampos() {
+        for (Component c : this.getContentPane().getComponents()) {
+            if (c instanceof JTextField ) {
+                JTextField campo = (JTextField) c;
+                if (!campo.equals(txtDni)) {
+                    campo.setText("");
+                }
+            }
+        }
+    }
+
+
+
 }

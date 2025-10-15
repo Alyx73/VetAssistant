@@ -13,9 +13,12 @@ import java.io.IOException;
  * @author Alex
  */
 public class UsuarioDAO {
-    
-        public Usuario iniciarSesion(String usuario, String contrasena) throws IOException {
-        
-            return new REST("/usuarios", Usuario.class).login(usuario, contrasena); 
-    }  
+
+    public Usuario iniciarSesion(String usuario, String contrasena) throws IOException {
+        return new REST("/usuarios", Usuario.class).login(usuario, contrasena);
+    }
+
+    public void modificar(Usuario usuario) throws IOException {
+        new REST("/usuarios", Usuario.class).update(usuario.getIdUsuario(), usuario);
+    }
 }

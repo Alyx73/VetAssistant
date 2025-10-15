@@ -4,8 +4,11 @@
  */
 package com.apr.vetclient.vista;
 
+import com.apr.vetclient.modelo.dao.UsuarioDAO;
 import com.apr.vetclient.modelo.vo.Usuario;
 import com.apr.vetclient.util.Idioma;
+import java.io.IOException;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -74,8 +77,8 @@ public class VistaPrincipal extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosed(java.awt.event.WindowEvent evt) {
-                formWindowClosed(evt);
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
             }
         });
 
@@ -218,9 +221,15 @@ public class VistaPrincipal extends javax.swing.JFrame {
         usuario.setIdioma("gl-ES");
     }//GEN-LAST:event_mGalegoActionPerformed
 
-    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
-        // Guardar preferencias usuario
-    }//GEN-LAST:event_formWindowClosed
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        try {    //Windows closed no funcionaria
+            new UsuarioDAO().modificar(usuario);
+        } catch (IOException ex) {
+            Idioma i = new Idioma(usuario.getIdioma());
+            JOptionPane.showMessageDialog(this,i.texto("error.conexion.ms"),i.texto("error.conexion.titulo"), 
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_formWindowClosing
 
 
 

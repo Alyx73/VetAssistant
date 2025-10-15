@@ -59,12 +59,13 @@ public class UsuarioDAO {
     
     // Método para modificar usuario
     public int updateUsuario(Usuario usuario){
-        String sql = "UPDATE usuario SET usuario=?, contrasena=?, rol=? WHERE idUsuario = ?";
+        String sql = "UPDATE usuario SET usuario=?, contrasena=?, rol=?, idioma=? WHERE idUsuario = ?";
         return jdbc.update(sql,
                 usuario.getUsuario(),
                 usuario.getContrasena(),
-                usuario.getRol()
-        );
+                usuario.getRol(),
+                usuario.getIdioma()
+                ,usuario.getIdUsuario());
     }
     
     // Método para eliminar usuario
