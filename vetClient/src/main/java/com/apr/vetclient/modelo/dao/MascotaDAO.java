@@ -9,8 +9,6 @@ import com.apr.vetclient.util.REST;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -23,7 +21,7 @@ public class MascotaDAO {
         try {
             mascotas = new REST("/mascotas", Mascota.class).getPorParametro("/dueno/" + idCliente);
         } catch (IOException ex) {
-            Logger.getLogger(MascotaDAO.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(MascotaDAO.class.getName()).log(Level.SEVERE, null, ex); // No me hace falta esta excepcion
         }
         return mascotas;
     }

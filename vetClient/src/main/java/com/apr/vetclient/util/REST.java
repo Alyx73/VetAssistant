@@ -129,9 +129,7 @@ public class REST<T> {
         conn.disconnect();
     }
 
-    // ---------------------------
-    // DELETE: Eliminar registro
-    // ---------------------------
+    // DELETE Eliminar registro
     public void delete(int id) throws IOException {
         URL url = new URL(baseUrl + "/" + id);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -172,9 +170,7 @@ public class REST<T> {
         }
         
     }
-
-
-    
+ 
     // Método para comprobar si hay error en la respuesta REST
     private void verificarRespuestaRest(HttpURLConnection conn) throws IOException {
         int respuesta = conn.getResponseCode();

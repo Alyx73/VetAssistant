@@ -226,7 +226,7 @@ public class VistaPrincipal extends javax.swing.JFrame {
             new UsuarioDAO().modificar(usuario);
         } catch (IOException ex) {
             Idioma i = new Idioma(usuario.getIdioma());
-            JOptionPane.showMessageDialog(this,i.texto("error.conexion.ms"),i.texto("error.conexion.titulo"), 
+            JOptionPane.showMessageDialog(this,i.texto("error.conexion.mensaje"),i.texto("error.conexion.titulo"), 
                     JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_formWindowClosing

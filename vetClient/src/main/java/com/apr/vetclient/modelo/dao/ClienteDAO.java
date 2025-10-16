@@ -7,7 +7,6 @@ package com.apr.vetclient.modelo.dao;
 import com.apr.vetclient.modelo.vo.Cliente;
 import com.apr.vetclient.util.REST;
 import java.io.IOException;
-import java.net.ConnectException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,14 +16,8 @@ import java.util.logging.Logger;
  */
 public class ClienteDAO {
 
-    public Cliente buscarPorDni(String dni) {
-            Cliente cli = null;
-        try {
-            cli = (Cliente) (new REST("/clientes", Cliente.class).getPorParametro("/dni/" + dni)).getFirst();
-        } catch (IOException ex) {
-            Logger.getLogger(ClienteDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return cli;
+    public Cliente buscarPorDni(String dni) throws IOException {
+        return (Cliente) (new REST("/clientes", Cliente.class).getPorParametro("/dni/" + dni)).getFirst();
     }
 
     public void alta(Cliente cliente) throws IOException {
@@ -34,8 +27,9 @@ public class ClienteDAO {
     public void modificar(int id, Cliente cliente) throws  IOException{
         new REST("/clientes", Cliente.class).update(id, cliente);
     }
-    
-    
-    
-    
+
+    public void borrar(int id) throws IOException{
+        new REST("/clientes", Cliente.class).delete(id);
+    }
+
 }
