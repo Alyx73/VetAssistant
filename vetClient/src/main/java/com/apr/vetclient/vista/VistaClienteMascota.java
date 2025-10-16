@@ -14,11 +14,10 @@ import java.awt.Color;
 import java.awt.Component;
 import java.io.IOException;
 import java.net.ConnectException;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -33,7 +32,6 @@ import javax.swing.table.TableColumnModel;
 public class VistaClienteMascota extends JFrame {
     
     private JFrame ventanaAnterior;
-    //private Usuario usuario;
     private Idioma i;  // Preferencia de idioma para textos
     private List<Mascota> mascotas = new ArrayList<>();   // Creo esta lista global para reutilizar los objetos de la tabla y rellenar los campos de mascota
     private DefaultTableModel modeloTabla = new DefaultTableModel();
@@ -282,6 +280,11 @@ public class VistaClienteMascota extends JFrame {
 
         btnAltaMascota.setText("Alta");
         btnAltaMascota.setPreferredSize(new java.awt.Dimension(75, 23));
+        btnAltaMascota.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAltaMascotaActionPerformed(evt);
+            }
+        });
 
         btnModificarMascota.setText("Modificar");
 
@@ -613,8 +616,33 @@ public class VistaClienteMascota extends JFrame {
     }//GEN-LAST:event_btnEliminarClienteActionPerformed
 
     private void btnCargarFotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCargarFotoActionPerformed
-        new JFileChooser();
+        //new JFileChooser();
     }//GEN-LAST:event_btnCargarFotoActionPerformed
+
+    private void btnAltaMascotaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAltaMascotaActionPerformed
+        if (txtDni.getText().isBlank()) {
+            return;
+        }
+        if (!camposVacios(txtChip, txtNombreMascota, txtEspecie)) {
+            try {
+                Cliente dueno = clienteDAO.buscarPorDni(txtDni.getText().trim());
+                if (dueno == null) {
+                    JOptionPane.showMessageDialog(this, i.texto("error.cliente.noexiste"));
+                    return;
+                }
+                mascotaDAO.alta(new Mascota(0, txtChip.getText().trim(), txtNombreMascota.getText().trim(), txtEspecie.getText().trim(),
+                        txtRaza.getText().trim(), Date.from(Instant.now()), dueno.getIdCliente(), "foto"));
+                JOptionPane.showMessageDialog(this, i.texto("cm.mascota.alta.ok"));
+                rellenarTablaMascotas(dueno.getIdCliente());
+            } catch (ConnectException ex) {
+                JOptionPane.showMessageDialog(this, i.texto("error.conexion.mensaje"), i.texto("error.conexion.titulo"),
+                        JOptionPane.ERROR_MESSAGE);
+            } catch (IOException ex) {
+                System.out.println(ex);
+                //JOptionPane.showMessageDialog(this, i.texto("error.mascota.existe"));
+            }
+        }  
+    }//GEN-LAST:event_btnAltaMascotaActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -665,7 +693,6 @@ public class VistaClienteMascota extends JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void rellenarCamposMascota(Mascota mascota) {
-        txtChip.setText(String.valueOf(mascota.getIdMascota()));
         txtNombreMascota.setText(mascota.getNombre());
         txtEspecie.setText(mascota.getEspecie());
         txtRaza.setText(mascota.getRaza());
@@ -719,16 +746,6 @@ public class VistaClienteMascota extends JFrame {
         columnas.getColumn(2).setHeaderValue(i.texto("cm.especie"));
         columnas.getColumn(3).setHeaderValue(i.texto("cm.raza"));
                
-    }
-
-    private boolean validarDni(String dni) {
-        if (!dni.matches("^[0-9]{8}[a-zA-Z]$")) {
-            return false;
-        } 
-        String letras = "TRWAGMYFPDXBNJZSQVHLCKE";
-        int numero = Integer.parseInt(dni.substring(0, 8));
-        
-        return (dni.toUpperCase().charAt(8) == letras.charAt(numero % 23));
     }
      
     private boolean camposVacios(JTextField... campos) { // Uso esta nomenclatura para reutilizar el método con número de campos variable

@@ -68,7 +68,7 @@ public class controladorMascota {
     //POST insertar nueva mascota
     // Devuelve un string con el resultado de accion (error/ok)
     @PostMapping
-    public ResponseEntity<String> add(@RequestBody Mascota mascota) {  
+    public ResponseEntity<String> addMascota(@RequestBody Mascota mascota) {  
         try {
             int result = mascotaDAO.addMascota(mascota);
             if (result > 0) {
@@ -84,7 +84,7 @@ public class controladorMascota {
     //PUT modificar mascota
     // Devuelve un string con el resultado de accion (error/ok)
     @PutMapping("/{id}")
-    public ResponseEntity<String> update(@PathVariable int id, @RequestBody Mascota mascota) {
+    public ResponseEntity<String> updateMascota(@PathVariable int id, @RequestBody Mascota mascota) {
         try {
             mascota.setIdMascota(id);
             int result = mascotaDAO.updateMascota(mascota);

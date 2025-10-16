@@ -7,8 +7,6 @@ package com.apr.vetclient.modelo.dao;
 import com.apr.vetclient.modelo.vo.Cliente;
 import com.apr.vetclient.util.REST;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *

@@ -27,11 +27,10 @@ public class MascotaDAO {
         return jdbc.query(sql, (rs, rowNum)
                 -> new Mascota(
                         rs.getInt(1),
+                        rs.getString("chip"),
                         rs.getString("nombre"),
                         rs.getString("especie"),
                         rs.getString("raza"),
-                        //rs.getDate("fechaNacimiento").toLocalDate(),
-                        //rs.getString("fechaNacimiento"),
                         rs.getTimestamp("fechaNacimiento"),
                         rs.getInt("idCliente"),
                         rs.getString("foto")
@@ -45,11 +44,10 @@ public class MascotaDAO {
         return jdbc.query(sql, (rs, rowNum)
                 -> new Mascota(
                         rs.getInt("idMascota"),
+                        rs.getString("chip"),
                         rs.getString("nombre"),
                         rs.getString("especie"),
                         rs.getString("raza"),
-                        //rs.getDate("fechaNacimiento").toLocalDate(),
-                        //rs.getString("fechaNacimiento"),
                         rs.getTimestamp("fechaNacimiento"),
                         rs.getInt("idCliente"),
                         rs.getString("foto")
@@ -60,13 +58,13 @@ public class MascotaDAO {
 
     // Método para insertar mascota
     public int addMascota(Mascota mascota) {
-        String sql = "INSERT INTO mascota (nombre, especie, raza, fechaNacimiento, idCliente, foto) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO mascota (chip, nombre, especie, raza, fechaNacimiento, idCliente, foto) VALUES (?, ?, ?, ?, ?, ?, ?)";
         return jdbc.update(sql,
+                mascota.getChip(),
                 mascota.getNombre(),
                 mascota.getEspecie(),
                 mascota.getRaza(),
                 mascota.getFechaNacimiento(),
-                //mascota.getFechaNacimiento(),
                 mascota.getIdCliente(),
                 mascota.getFoto()
         );
@@ -74,12 +72,12 @@ public class MascotaDAO {
 
     // Método para modificar mascota
     public int updateMascota(Mascota mascota) {
-        String sql = "UPDATE mascota SET nombre=?, especie=?, raza=?, fechaNacimiento=?, idCliente=?, foto=? WHERE idMascota=?";
+        String sql = "UPDATE mascota SET chip=?, nombre=?, especie=?, raza=?, fechaNacimiento=?, idCliente=?, foto=? WHERE idMascota=?";
         return jdbc.update(sql,
+                mascota.getChip(),
                 mascota.getNombre(),
                 mascota.getEspecie(),
                 mascota.getRaza(),
-                //java.sql.Date.valueOf(mascota.getFechaNacimiento()),
                 mascota.getFechaNacimiento(),
                 mascota.getIdCliente(),
                 mascota.getFoto(),
@@ -99,10 +97,10 @@ public class MascotaDAO {
         return jdbc.query(sql, (rs, rowNum)
                 -> new Mascota(
                         rs.getInt(1),
+                        rs.getString("chip"),
                         rs.getString("nombre"),
                         rs.getString("especie"),
                         rs.getString("raza"),
-                        //rs.getDate("fechaNacimiento").toLocalDate(),
                         rs.getTimestamp("fechaNacimiento"),
                         rs.getInt("idCliente"),
                         rs.getString("foto")

@@ -4,7 +4,6 @@
  */
 package com.apr.vetclient.modelo.vo;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 
@@ -16,16 +15,17 @@ import java.util.Date;
 public class Mascota {
     
     private int idMascota;
+    private String chip;
     private String nombre;
     private String especie;
     private String raza;
-    //private LocalDate fechaNacimiento;
     private Date fechaNacimiento;
     private int idCliente;
     private String foto;
 
-    public Mascota(int idMascota, String nombre, String especie, String raza, Date fechaNacimiento, int idCliente, String foto) {
+    public Mascota(int idMascota, String chip, String nombre, String especie, String raza, Date fechaNacimiento, int idCliente, String foto) {
         this.idMascota = idMascota;
+        this.chip = chip;
         this.nombre = nombre;
         this.especie = especie;
         this.raza = raza;
@@ -37,6 +37,14 @@ public class Mascota {
     // Getters y Setters
     public int getIdMascota() {
         return idMascota;
+    }
+
+    public String getChip() {
+        return chip;
+    }
+
+    public void setChip(String chip) {
+        this.chip = chip;
     }
 
     public void setIdMascota(int idMascota) {

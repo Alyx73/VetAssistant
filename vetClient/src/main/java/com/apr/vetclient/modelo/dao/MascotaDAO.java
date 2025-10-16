@@ -25,4 +25,8 @@ public class MascotaDAO {
         }
         return mascotas;
     }
+
+    public void alta(Mascota mascota) throws IOException {
+        new REST("/mascotas", Mascota.class).create(mascota);
+    }
 }

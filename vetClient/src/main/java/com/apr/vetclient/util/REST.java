@@ -6,6 +6,7 @@ package com.apr.vetclient.util;
 
 import com.apr.vetclient.modelo.vo.Usuario;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import java.io.*;
 import java.lang.reflect.Type;
@@ -25,7 +26,8 @@ public class REST<T> {
 
     private String baseUrl;
     private Class<T> tipo;
-    private Gson gson = new Gson();
+    //private Gson gson = new Gson();
+    private Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
     private String cabeceraAutorizacion;
 
     public REST(String fragmentoPath, Class<T> tipo) throws IOException{
@@ -103,6 +105,7 @@ public class REST<T> {
         conn.setDoOutput(true); // Obligatorio cuando mando datos en la peticion 
 
         try (OutputStream os = conn.getOutputStream()) {
+            System.out.println(new Gson().toJson(obj));    // Borrar
             byte[] input = gson.toJson(obj).getBytes(StandardCharsets.UTF_8);
             os.write(input, 0, input.length);
         }
