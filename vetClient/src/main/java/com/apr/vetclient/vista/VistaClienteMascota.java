@@ -4,16 +4,21 @@
  */
 package com.apr.vetclient.vista;
 
+import com.apr.vetclient.controlador.controladorClienteMascota;
 import com.apr.vetclient.modelo.dao.ClienteDAO;
 import com.apr.vetclient.modelo.dao.MascotaDAO;
 import com.apr.vetclient.modelo.vo.Cliente;
 import com.apr.vetclient.modelo.vo.Mascota;
 import com.apr.vetclient.modelo.vo.Usuario;
 import com.apr.vetclient.util.Idioma;
+import com.toedter.calendar.JDateChooser;
 import java.awt.Color;
 import java.awt.Component;
 import java.io.IOException;
+import java.lang.reflect.Member;
 import java.net.ConnectException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,7 +38,9 @@ public class VistaClienteMascota extends JFrame {
     
     private JFrame ventanaAnterior;
     private Idioma i;  // Preferencia de idioma para textos
-    private List<Mascota> mascotas = new ArrayList<>();   // Creo esta lista global para reutilizar los objetos de la tabla y rellenar los campos de mascota
+    // Creo esta lista global para reutilizar los objetos de la tabla y rellenar los campos de mascota
+    // asi no realiza una busqueda de mascotas cada vez que se hace click en una fila de la tabla, solamente cuando se cambia de dueño
+    private List<Mascota> mascotas = new ArrayList<>();   
     private DefaultTableModel modeloTabla = new DefaultTableModel();
     private ClienteDAO clienteDAO = new ClienteDAO();
     private MascotaDAO mascotaDAO = new MascotaDAO();
@@ -90,7 +97,7 @@ public class VistaClienteMascota extends JFrame {
         txtNombreMascota = new javax.swing.JTextField();
         lblEspecie = new javax.swing.JLabel();
         txtEspecie = new javax.swing.JTextField();
-        lvlChip = new javax.swing.JLabel();
+        lblChip = new javax.swing.JLabel();
         txtChip = new javax.swing.JTextField();
         lblRaza = new javax.swing.JLabel();
         txtRaza = new javax.swing.JTextField();
@@ -105,6 +112,7 @@ public class VistaClienteMascota extends JFrame {
         btnConsulta = new javax.swing.JButton();
         lblSinMascotas = new javax.swing.JLabel();
         btnCargarFoto = new javax.swing.JButton();
+        jDateChooser1 = new com.toedter.calendar.JDateChooser();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -200,7 +208,7 @@ public class VistaClienteMascota extends JFrame {
                 {null, null, null, null}
             },
             new String [] {
-                "Chip", "Nombre", "Especie", "Raza"
+                "NºChip", "Nombre", "Especie", "Raza"
             }
         ) {
             Class[] types = new Class [] {
@@ -256,9 +264,19 @@ public class VistaClienteMascota extends JFrame {
 
         txtEspecie.setText("Perro");
 
-        lvlChip.setText("NºChip:");
+        lblChip.setText("NºChip:");
 
         txtChip.setText("666");
+        txtChip.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtChipFocusLost(evt);
+            }
+        });
+        txtChip.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtChipKeyTyped(evt);
+            }
+        });
 
         lblRaza.setText("Raza:");
 
@@ -303,6 +321,8 @@ public class VistaClienteMascota extends JFrame {
                 btnCargarFotoActionPerformed(evt);
             }
         });
+
+        jDateChooser1.setDateFormatString("dd MM yyyy");
 
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
@@ -382,7 +402,7 @@ public class VistaClienteMascota extends JFrame {
                                                     .addGap(7, 7, 7)
                                                     .addComponent(txtEspecie, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
                                                 .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                                    .addComponent(lvlChip)
+                                                    .addComponent(lblChip)
                                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                     .addComponent(txtChip, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                             .addGap(18, 18, 18)
@@ -395,16 +415,18 @@ public class VistaClienteMascota extends JFrame {
                                                     .addComponent(lblNombreMascota)
                                                     .addGap(7, 7, 7)
                                                     .addComponent(txtNombreMascota, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addComponent(lblFechaNacimiento)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                            .addComponent(txtFechaNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                             .addComponent(btnAltaMascota, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addGap(18, 18, 18)
                                             .addComponent(btnModificarMascota)
                                             .addGap(18, 18, 18)
-                                            .addComponent(btnEliminarMascota, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                            .addComponent(btnEliminarMascota, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(lblFechaNacimiento)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(txtFechaNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))))
                                     .addComponent(lblMascota))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(lblFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -448,7 +470,7 @@ public class VistaClienteMascota extends JFrame {
                                     .addComponent(txtDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                                    .addComponent(lvlChip)
+                                    .addComponent(lblChip)
                                     .addComponent(txtChip, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(lblNombreMascota)
                                     .addComponent(txtNombreMascota, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -463,7 +485,9 @@ public class VistaClienteMascota extends JFrame {
                                     .addComponent(lblFechaNacimiento)
                                     .addComponent(txtFechaNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnCargarFoto)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(btnCargarFoto)
+                                    .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(26, 26, 26)
@@ -500,6 +524,7 @@ public class VistaClienteMascota extends JFrame {
     private void tablaMascotasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaMascotasMouseClicked
         if (tablaMascotas.getSelectedRow() != -1) {  // Si hay seleccionada alguna fila
             rellenarCamposMascota(mascotas.get(tablaMascotas.getSelectedRow()));
+            
         }
     }//GEN-LAST:event_tablaMascotasMouseClicked
 
@@ -508,28 +533,36 @@ public class VistaClienteMascota extends JFrame {
     }//GEN-LAST:event_formWindowClosed
 
     private void btnAltaClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAltaClienteActionPerformed
-        if (txtDni.getText().isBlank()) return;
-        if (!camposVacios(txtTelefono, txtNombreCliente, txtApellidos, txtDireccion, txtEmail)) {
-            try {
-                clienteDAO.alta(new Cliente(0, txtDni.getText().trim(), txtNombreCliente.getText().trim(), txtApellidos.getText().trim(),
-                        txtTelefono.getText().trim(), txtEmail.getText().trim(), txtDireccion.getText().trim()));
-                JOptionPane.showMessageDialog(this, i.texto("cm.cliente.alta.ok"));
-            } catch (ConnectException ex) {
-                JOptionPane.showMessageDialog(this, i.texto("error.conexion.mensaje"), i.texto("error.conexion.titulo"),
-                        JOptionPane.ERROR_MESSAGE);
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, i.texto("error.cliente.existe"));
+        if (!txtDni.getText().isBlank()) {
+            if (!camposVacios(txtTelefono, txtNombreCliente, txtApellidos, txtDireccion, txtEmail)) {
+                try {
+                    controladorClienteMascota.altaCliente(new Cliente(0, txtDni.getText().trim(), txtNombreCliente.getText().trim(),
+                            txtApellidos.getText().trim(), txtTelefono.getText().trim(), txtEmail.getText().trim(),
+                            txtDireccion.getText().trim()));
+                    JOptionPane.showMessageDialog(this, i.texto("cm.cliente.alta.ok"));
+                } catch (ConnectException ex) {
+                    JOptionPane.showMessageDialog(this, i.texto("error.conexion.mensaje"), i.texto("error.conexion.titulo"),
+                            JOptionPane.ERROR_MESSAGE);
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(this, i.texto("error.cliente.existe"));
+                }
             }
         }
     }//GEN-LAST:event_btnAltaClienteActionPerformed
 
     private void txtDniFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtDniFocusLost
-        validarCampo("Dni", txtDni);
-        try {
-            rellenarCamposCliente(clienteDAO.buscarPorDni(txtDni.getText()));
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, i.texto("error.conexion.mensaje"), i.texto("error.conexion.titulo"),
-                        JOptionPane.ERROR_MESSAGE);
+        if (!txtDni.getText().isBlank()) {
+            if (validarCampo("Dni", txtDni)) {
+                try {
+                    Cliente cliente = controladorClienteMascota.buscarClientePorDni(txtDni.getText().trim());
+                    rellenarCamposCliente(cliente);
+                    mascotas = controladorClienteMascota.buscarMascotasPorDueno(cliente.getIdCliente()); // Guardo en lista global para evitar busquedas
+                    rellenarTablaMascotas(mascotas);
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(this, i.texto("error.conexion.mensaje"), i.texto("error.conexion.titulo"),
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
         }
     }//GEN-LAST:event_txtDniFocusLost
 
@@ -567,51 +600,51 @@ public class VistaClienteMascota extends JFrame {
     }//GEN-LAST:event_txtEmailFocusLost
 
     private void btnModificarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarClienteActionPerformed
-        if (txtDni.getText().isBlank()) {
-            return;
+        if (!txtDni.getText().isBlank()) {
+            if (!camposVacios(txtNombreCliente, txtApellidos, txtTelefono, txtDireccion, txtEmail)) {
+                try {
+                    Cliente cli = controladorClienteMascota.buscarClientePorDni(txtDni.getText().trim());
+                    if (cli == null) {
+                        JOptionPane.showMessageDialog(this, i.texto("error.cliente.noexiste"));
+                        return;
+                    }
+                    controladorClienteMascota.modificarCliente(cli.getIdCliente(), new Cliente(0, txtDni.getText().trim(),
+                            txtNombreCliente.getText().trim(), txtApellidos.getText(), txtTelefono.getText().trim(),
+                            txtEmail.getText().trim(), txtDireccion.getText().trim()));
+                    JOptionPane.showMessageDialog(this, i.texto("cm.cliente.modificacion.ok"));
+                } catch (ConnectException ex) {
+                    JOptionPane.showMessageDialog(this, i.texto("error.conexion.mensaje"), i.texto("error.conexion.titulo"),
+                            JOptionPane.ERROR_MESSAGE);
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(this, ex); // Para otros posibles errores 
+                }
+            }
         }
-        if (!camposVacios(txtNombreCliente, txtApellidos, txtTelefono, txtDireccion, txtEmail)) {
+    }//GEN-LAST:event_btnModificarClienteActionPerformed
+
+    private void btnEliminarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarClienteActionPerformed
+        if (!txtDni.getText().isBlank()) {
             try {
-                Cliente cli = clienteDAO.buscarPorDni(txtDni.getText().trim());
+                Cliente cli = controladorClienteMascota.buscarClientePorDni(txtDni.getText().trim());
                 if (cli == null) {
                     JOptionPane.showMessageDialog(this, i.texto("error.cliente.noexiste"));
                     return;
-                }        
-                    clienteDAO.modificar(cli.getIdCliente(), new Cliente(0, txtDni.getText().trim(), txtNombreCliente.getText().trim(),
-                            txtApellidos.getText(), txtTelefono.getText().trim(), txtEmail.getText().trim(), txtDireccion.getText().trim()));
-                    JOptionPane.showMessageDialog(this, i.texto("cm.cliente.modificacion.ok"));
-                
+                }
+                int confirmar = JOptionPane.showConfirmDialog(this, i.texto("cm.cliente.borrado.confirmacion"),
+                        i.texto("mensaje.confirmacion"),
+                        JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+                if (confirmar == JOptionPane.YES_OPTION) {
+                    controladorClienteMascota.borrarCliente(cli.getIdCliente());
+                    JOptionPane.showMessageDialog(this, i.texto("cm.cliente.borrado.ok"));
+                    vaciarCampos();
+                    txtDni.setText("");
+                }
             } catch (ConnectException ex) {
                 JOptionPane.showMessageDialog(this, i.texto("error.conexion.mensaje"), i.texto("error.conexion.titulo"),
                         JOptionPane.ERROR_MESSAGE);
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(this, ex); // Para otros posibles errores 
             }
-        }
-    }//GEN-LAST:event_btnModificarClienteActionPerformed
-
-    private void btnEliminarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarClienteActionPerformed
-        if (txtDni.getText().isBlank()) return;
-
-        try {
-            Cliente cli = clienteDAO.buscarPorDni(txtDni.getText());
-            if (cli == null) {
-                    JOptionPane.showMessageDialog(this, i.texto("error.cliente.noexiste"));
-                    return;
-                }
-            int confirmar = JOptionPane.showConfirmDialog(this, i.texto("cm.cliente.borrado.confirmacion"), i.texto("mensaje.confirmacion"), 
-                                                            JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.WARNING_MESSAGE);
-            if (confirmar == JOptionPane.YES_OPTION) {
-                clienteDAO.borrar(cli.getIdCliente());
-                JOptionPane.showMessageDialog(this, i.texto("cm.cliente.borrado.ok"));
-                vaciarCampos();
-                txtDni.setText("");
-            }
-        } catch (ConnectException ex) {
-            JOptionPane.showMessageDialog(this, i.texto("error.conexion.mensaje"), i.texto("error.conexion.titulo"),
-                    JOptionPane.ERROR_MESSAGE);
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, ex); // Para otros posibles errores 
         }
     }//GEN-LAST:event_btnEliminarClienteActionPerformed
 
@@ -620,29 +653,56 @@ public class VistaClienteMascota extends JFrame {
     }//GEN-LAST:event_btnCargarFotoActionPerformed
 
     private void btnAltaMascotaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAltaMascotaActionPerformed
-        if (txtDni.getText().isBlank()) {
+        if (txtDni.getText().isBlank() && !txtChip.getText().isBlank()) {
+            JOptionPane.showMessageDialog(this, i.texto("error.mascota.sincliente"));
             return;
         }
         if (!camposVacios(txtChip, txtNombreMascota, txtEspecie)) {
             try {
-                Cliente dueno = clienteDAO.buscarPorDni(txtDni.getText().trim());
+                Cliente dueno = controladorClienteMascota.buscarClientePorDni(txtDni.getText().trim());
                 if (dueno == null) {
                     JOptionPane.showMessageDialog(this, i.texto("error.cliente.noexiste"));
                     return;
                 }
-                mascotaDAO.alta(new Mascota(0, txtChip.getText().trim(), txtNombreMascota.getText().trim(), txtEspecie.getText().trim(),
-                        txtRaza.getText().trim(), Date.from(Instant.now()), dueno.getIdCliente(), "foto"));
+                controladorClienteMascota.altaMascota(new Mascota(0, txtChip.getText().trim(), txtNombreMascota.getText().trim(), 
+                        txtEspecie.getText().trim(), txtRaza.getText().trim(), Date.from(Instant.now()), 
+                        dueno.getIdCliente(), "foto"));
                 JOptionPane.showMessageDialog(this, i.texto("cm.mascota.alta.ok"));
-                rellenarTablaMascotas(dueno.getIdCliente());
+                mascotas = controladorClienteMascota.buscarMascotasPorDueno(dueno.getIdCliente());
+                rellenarTablaMascotas(mascotas);
             } catch (ConnectException ex) {
                 JOptionPane.showMessageDialog(this, i.texto("error.conexion.mensaje"), i.texto("error.conexion.titulo"),
                         JOptionPane.ERROR_MESSAGE);
             } catch (IOException ex) {
-                System.out.println(ex);
-                //JOptionPane.showMessageDialog(this, i.texto("error.mascota.existe"));
+                //System.out.println(ex);
+                JOptionPane.showMessageDialog(this, i.texto("error.mascota.existe"));
             }
         }  
     }//GEN-LAST:event_btnAltaMascotaActionPerformed
+
+    private void txtChipFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtChipFocusLost
+        if (!txtChip.getText().isBlank()) {
+            try {
+                Mascota mascota = controladorClienteMascota.buscarMascotaPorChip(txtChip.getText().trim());
+                if (mascota != null) {
+                    rellenarCamposMascota(mascota);
+                    Cliente cliente = controladorClienteMascota.buscarClientePorId(mascota.getIdCliente());
+                    rellenarCamposCliente(cliente);
+                    mascotas = controladorClienteMascota.buscarMascotasPorDueno(cliente.getIdCliente());
+                    rellenarTablaMascotas(mascotas);
+                }    
+            } catch (IOException ex) {
+                System.out.println(ex);
+                JOptionPane.showMessageDialog(this, i.texto("error.conexion.mensaje"), i.texto("error.conexion.titulo"),
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_txtChipFocusLost
+
+    private void txtChipKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtChipKeyTyped
+        txtChip.setBackground(Color.WHITE);
+        vaciarCampos(txtNombreMascota,txtEspecie,txtRaza,txtFechaNacimiento);
+    }//GEN-LAST:event_txtChipKeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -654,6 +714,7 @@ public class VistaClienteMascota extends JFrame {
     private javax.swing.JButton btnEliminarMascota;
     private javax.swing.JButton btnModificarCliente;
     private javax.swing.JButton btnModificarMascota;
+    private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
@@ -661,6 +722,7 @@ public class VistaClienteMascota extends JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lblApellidos;
+    private javax.swing.JLabel lblChip;
     private javax.swing.JLabel lblCliente;
     private javax.swing.JLabel lblDireccion;
     private javax.swing.JLabel lblDni;
@@ -676,7 +738,6 @@ public class VistaClienteMascota extends JFrame {
     private javax.swing.JLabel lblRaza;
     private javax.swing.JLabel lblSinMascotas;
     private javax.swing.JLabel lblTfno;
-    private javax.swing.JLabel lvlChip;
     private javax.swing.JTextArea taHistorial;
     private javax.swing.JTable tablaMascotas;
     private javax.swing.JTextField txtApellidos;
@@ -693,11 +754,13 @@ public class VistaClienteMascota extends JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void rellenarCamposMascota(Mascota mascota) {
+        txtChip.setText(mascota.getChip());
         txtNombreMascota.setText(mascota.getNombre());
         txtEspecie.setText(mascota.getEspecie());
         txtRaza.setText(mascota.getRaza());
-        txtFechaNacimiento.setText(mascota.getFechaNacimiento().toInstant().toString().substring(0, 10));
-        lblFoto.setText(mascota.getFoto());     
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd-MM-yyyy");
+        txtFechaNacimiento.setText(formatoFecha.format(mascota.getFechaNacimiento()));
+        lblFoto.setText(mascota.getFoto());
     }
 
     private void rellenarCamposCliente(Cliente cliente) {
@@ -708,17 +771,15 @@ public class VistaClienteMascota extends JFrame {
             txtTelefono.setText(cliente.getTelefono());
             txtDireccion.setText(cliente.getDireccion());
             txtEmail.setText(cliente.getMail());
-            rellenarTablaMascotas(cliente.getIdCliente());
         }
     }
 
-    private void rellenarTablaMascotas(int idCliente) {
+    private void rellenarTablaMascotas(List<Mascota> mascotas) {
         modeloTabla.setRowCount(0);
-        mascotas = mascotaDAO.buscarPorDueno(idCliente);
         lblSinMascotas.setVisible(mascotas.isEmpty());
         for (Mascota m : mascotas) {
             modeloTabla.addRow(new Object[]{
-                m.getIdMascota(),
+                m.getChip(),
                 m.getNombre(),
                 m.getEspecie(),
                 m.getRaza()
@@ -728,7 +789,7 @@ public class VistaClienteMascota extends JFrame {
 
     private void cargarTextos(String idioma) {
         Idioma i = new Idioma(idioma);
-        
+        //Para el cliente
         lblCliente.setText(i.texto("cm.cliente"));
         lblDni.setText(i.texto("cm.dni"));
         lblTfno.setText(i.texto("cm.tfno"));
@@ -738,6 +799,9 @@ public class VistaClienteMascota extends JFrame {
         lblDireccion.setText(i.texto("cm.direccion"));
         lblMascotasCliente.setText(i.texto("cm.mascotas_cliente"));
         lblSinMascotas.setText(i.texto("cm.sinmascotas"));
+        btnAltaCliente.setText(i.texto("boton.alta"));
+        btnModificarCliente.setText(i.texto("boton.modificar"));
+        btnEliminarCliente.setText(i.texto("boton.eliminar"));
         //Para las cabeceras de la tabla
         JTableHeader cabecera = tablaMascotas.getTableHeader();
         TableColumnModel columnas = cabecera.getColumnModel();
@@ -745,7 +809,18 @@ public class VistaClienteMascota extends JFrame {
         columnas.getColumn(1).setHeaderValue(i.texto("cm.nombre"));
         columnas.getColumn(2).setHeaderValue(i.texto("cm.especie"));
         columnas.getColumn(3).setHeaderValue(i.texto("cm.raza"));
-               
+        //Para la mascota
+        lblMascota.setText(i.texto("cm.mascota"));
+        lblChip.setText(i.texto("cm.chip") + ":");
+        lblNombreMascota.setText(i.texto("cm.nombre") + ":");
+        lblEspecie.setText(i.texto("cm.especie") + ":");
+        lblRaza.setText(i.texto("cm.raza") + ":");
+        lblFechaNacimiento.setText(i.texto("cm.nacimiento"));
+        lblHistorial.setText(i.texto("cm.historial"));
+        btnConsulta.setText(i.texto("cm.consulta"));
+        btnAltaMascota.setText(i.texto("boton.alta"));
+        btnModificarMascota.setText(i.texto("boton.modificar"));
+        btnEliminarMascota.setText(i.texto("boton.eliminar"));
     }
      
     private boolean camposVacios(JTextField... campos) { // Uso esta nomenclatura para reutilizar el método con número de campos variable
@@ -766,9 +841,9 @@ public class VistaClienteMascota extends JFrame {
         return vacios;
     }
     
-    private void validarCampo(String nombreCampo, JTextField campo){
-        if (!campo.getText().isBlank()) {
-            boolean valido = true;
+    private boolean validarCampo(String nombreCampo, JTextField campo){
+        boolean valido = true;
+        if (!campo.getText().isBlank()) {        
             String valor = campo.getText().trim();
             switch (nombreCampo) {
                 case "Dni": 
@@ -794,8 +869,18 @@ public class VistaClienteMascota extends JFrame {
                 campo.setBackground(Color.PINK);
             }
         }
+        return valido;
     }
 
+    private void vaciarCampos(JTextField... campos) {
+        taHistorial.setText("");
+        lblFoto.setIcon(null);
+        for (JTextField campo : campos) {
+            campo.setText("");
+            campo.setBackground(Color.WHITE);
+        }
+    }
+    
     private void vaciarCampos() {
         lblSinMascotas.setVisible(false);
         modeloTabla.setRowCount(0);

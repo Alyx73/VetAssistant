@@ -26,8 +26,11 @@ public class REST<T> {
 
     private String baseUrl;
     private Class<T> tipo;
-    //private Gson gson = new Gson();
-    private Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
+    //Uso private el Builede del Gson para formatear la fecha, 
+    //Spring solo reconoce este formato y el yyyy-MM-dd en el json
+    //Evaluar el crear un static final cuando llegue a CITAS o formatearlo en el servidor !!!!!!!!!!!!!!!!!!!!
+    //Gson gson = new Gson(); 
+    private Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();  
     private String cabeceraAutorizacion;
 
     public REST(String fragmentoPath, Class<T> tipo) throws IOException{
@@ -105,7 +108,7 @@ public class REST<T> {
         conn.setDoOutput(true); // Obligatorio cuando mando datos en la peticion 
 
         try (OutputStream os = conn.getOutputStream()) {
-            System.out.println(new Gson().toJson(obj));    // Borrar
+            //System.out.println(new Gson().toJson(obj));    // Borrar
             byte[] input = gson.toJson(obj).getBytes(StandardCharsets.UTF_8);
             os.write(input, 0, input.length);
         }

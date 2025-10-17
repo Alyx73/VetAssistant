@@ -129,7 +129,7 @@
                                                   <Component id="txtEspecie" min="-2" pref="64" max="-2" attributes="0"/>
                                               </Group>
                                               <Group type="102" alignment="0" attributes="0">
-                                                  <Component id="lvlChip" min="-2" max="-2" attributes="0"/>
+                                                  <Component id="lblChip" min="-2" max="-2" attributes="0"/>
                                                   <EmptySpace max="-2" attributes="0"/>
                                                   <Component id="txtChip" min="-2" pref="45" max="-2" attributes="0"/>
                                               </Group>
@@ -148,17 +148,20 @@
                                               </Group>
                                           </Group>
                                       </Group>
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Component id="lblFechaNacimiento" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                          <Component id="txtFechaNacimiento" min="-2" pref="82" max="-2" attributes="0"/>
-                                      </Group>
                                       <Group type="102" alignment="1" attributes="0">
                                           <Component id="btnAltaMascota" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace type="separate" max="-2" attributes="0"/>
                                           <Component id="btnModificarMascota" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace type="separate" max="-2" attributes="0"/>
                                           <Component id="btnEliminarMascota" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Group type="103" alignment="0" groupAlignment="1" attributes="0">
+                                          <Component id="jDateChooser1" min="-2" max="-2" attributes="0"/>
+                                          <Group type="102" attributes="0">
+                                              <Component id="lblFechaNacimiento" min="-2" max="-2" attributes="0"/>
+                                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                              <Component id="txtFechaNacimiento" min="-2" pref="82" max="-2" attributes="0"/>
+                                          </Group>
                                       </Group>
                                   </Group>
                                   <Component id="lblMascota" min="-2" max="-2" attributes="0"/>
@@ -218,7 +221,7 @@
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
                               <Group type="103" groupAlignment="2" attributes="0">
-                                  <Component id="lvlChip" alignment="2" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lblChip" alignment="2" min="-2" max="-2" attributes="0"/>
                                   <Component id="txtChip" alignment="2" min="-2" max="-2" attributes="0"/>
                                   <Component id="lblNombreMascota" alignment="2" min="-2" max="-2" attributes="0"/>
                                   <Component id="txtNombreMascota" alignment="2" min="-2" max="-2" attributes="0"/>
@@ -236,7 +239,10 @@
                                   <Component id="txtFechaNacimiento" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="btnCargarFoto" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Component id="btnCargarFoto" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jDateChooser1" min="-2" max="-2" attributes="0"/>
+                              </Group>
                           </Group>
                       </Group>
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -392,7 +398,7 @@
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
               <Table columnCount="4" rowCount="4">
-                <Column editable="true" title="Chip" type="java.lang.String"/>
+                <Column editable="true" title="N&#xba;Chip" type="java.lang.String"/>
                 <Column editable="true" title="Nombre" type="java.lang.String"/>
                 <Column editable="true" title="Especie" type="java.lang.String"/>
                 <Column editable="true" title="Raza" type="java.lang.String"/>
@@ -505,7 +511,7 @@
         <Property name="text" type="java.lang.String" value="Perro"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="lvlChip">
+    <Component class="javax.swing.JLabel" name="lblChip">
       <Properties>
         <Property name="text" type="java.lang.String" value="N&#xba;Chip:"/>
       </Properties>
@@ -514,6 +520,10 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="666"/>
       </Properties>
+      <Events>
+        <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtChipFocusLost"/>
+        <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtChipKeyTyped"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="lblRaza">
       <Properties>
@@ -611,6 +621,11 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCargarFotoActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="com.toedter.calendar.JDateChooser" name="jDateChooser1">
+      <Properties>
+        <Property name="dateFormatString" type="java.lang.String" value="dd MM yyyy"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

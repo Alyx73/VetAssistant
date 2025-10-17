@@ -108,5 +108,22 @@ public class MascotaDAO {
             idDueno // Paso como argumento el id de la mascota
         );
     }
+
+    public Mascota getMascotaPorChip(String chip) {
+        String sql = "SELECT * FROM mascota WHERE chip = ?";
+        return jdbc.query(sql, (rs, rowNum)
+                -> new Mascota(
+                        rs.getInt(1),
+                        rs.getString("chip"),
+                        rs.getString("nombre"),
+                        rs.getString("especie"),
+                        rs.getString("raza"),
+                        rs.getTimestamp("fechaNacimiento"),
+                        rs.getInt("idCliente"),
+                        rs.getString("foto")
+                ),
+                chip // Paso como argumento el id de la mascota
+        ).stream().findFirst().orElse(null);  // Recojo la primera fial devuelta y devuelvo null si esta vacía
+    }
 }
 

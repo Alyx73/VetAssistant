@@ -14,6 +14,10 @@ import java.io.IOException;
  */
 public class ClienteDAO {
 
+    public Cliente buscarPorId(int idCliente) throws IOException {
+        return (Cliente) new REST("/clientes", Cliente.class).getPorId(idCliente);
+    }
+    
     public Cliente buscarPorDni(String dni) throws IOException {
         return (Cliente) (new REST("/clientes", Cliente.class).getPorParametro("/dni/" + dni)).getFirst();
     }
@@ -29,5 +33,7 @@ public class ClienteDAO {
     public void borrar(int id) throws IOException{
         new REST("/clientes", Cliente.class).delete(id);
     }
+
+
 
 }

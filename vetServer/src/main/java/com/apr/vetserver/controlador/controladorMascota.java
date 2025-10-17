@@ -6,6 +6,7 @@ package com.apr.vetserver.controlador;
 
 import com.apr.vetserver.modelo.dao.MascotaDAO;
 import com.apr.vetserver.modelo.vo.Mascota;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -60,6 +61,21 @@ public class controladorMascota {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
             return ResponseEntity.ok(mascotas);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+    
+    //GET mascota por CHIP
+    @GetMapping("/chip/{chip}")
+    public ResponseEntity<List<Mascota>> getMascotaPorChip(@PathVariable String chip) {
+        try {
+            List<Mascota> lista = new ArrayList<>();            // lo meto en una lista para reutilizar el mismo REST generico en la app cliente
+            lista.add (mascotaDAO.getMascotaPorChip(chip));   // (lo usa mascotas para la lista de mascotas por cliente)
+            if (lista == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+            return ResponseEntity.ok(lista);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
